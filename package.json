@@ -7,6 +7,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"csp-header": "^2.1.2",
 		"next": "^10.0.6",
 		"next-compose-plugins": "^2.2.1",
 		"next-optimized-classnames": "^1.0.1",
