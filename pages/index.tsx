@@ -1,5 +1,11 @@
 import { NextPage } from 'next'
 
-const Home: NextPage = () => null
+import User from 'models/User'
+
+interface HomeProps {
+	user: User | null
+}
+
+const Home: NextPage<HomeProps> = ({ user }) => <>{user?.name}</>
 
 export default Home

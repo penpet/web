@@ -1,17 +1,28 @@
-import { NextPage } from 'next'
-import { AppProps } from 'next/app'
+import App, { AppProps, AppContext } from 'next/app'
 import { config } from '@fortawesome/fontawesome-svg-core'
 
+import getUser from 'lib/getUser'
 import Layout from 'components/Layout'
 
 import 'styles/global.scss'
 
 config.autoAddCss = false
 
-const App: NextPage<AppProps> = ({ Component, pageProps }) => (
-	<Layout>
+const CustomApp = ({ Component, pageProps }: AppProps) => (
+	<Layout user={pageProps.user}>
 		<Component {...pageProps} />
 	</Layout>
 )
 
-export default App
+CustomApp.getInitialProps = async (context: AppContext) => {
+	const [{ pageProps }, user] = await Promise.all([
+		App.getInitialProps(context),
+		getUser(context.ctx)
+	])
+
+	return {
+		pageProps: { ...pageProps, user }
+	}
+}
+
+export default CustomApp
