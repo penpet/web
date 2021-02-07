@@ -1,0 +1,112 @@
+@use 'styles/colors';
+@use 'styles/spinner';
+
+.root {
+	max-width: 95%;
+	width: 600px;
+	overflow: hidden;
+	background: colors.$background;
+	border: 1px solid colors.$border;
+	border-radius: 8px;
+}
+
+.details {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	background: transparentize(black, 0.7);
+}
+
+.hide {
+	display: flex;
+	overflow: hidden;
+	font-size: 26px;
+	color: var(--color);
+	background: white;
+	box-shadow: 0 0 10px 0 var(--color);
+	border-radius: 50%;
+	transition: opacity 0.3s;
+
+	&:hover {
+		opacity: 0.7;
+	}
+}
+
+.title {
+	font-size: 30px;
+	font-weight: 900;
+	color: white;
+}
+
+.fields {
+	display: flex;
+	flex-direction: column;
+	padding: 12px 16px 18px;
+
+	> label {
+		max-width: max-content;
+		margin-bottom: 6px;
+		font-weight: 900;
+		color: white;
+
+		&:not(:first-of-type) {
+			margin-top: 12px;
+		}
+	}
+
+	> input {
+		padding: 8px 12px;
+		font-size: 16px;
+		color: white;
+		background: transparentize(white, 0.9);
+		border-radius: 8px;
+		transition: background 0.3s;
+
+		&::placeholder {
+			color: transparentize(white, 0.5);
+		}
+
+		&:hover,
+		&:focus {
+			background: transparentize(white, 0.8);
+		}
+	}
+}
+
+.submit {
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 80px;
+	height: 30px;
+	font-size: 18px;
+	font-weight: 900;
+	color: white;
+	background: var(--color);
+	box-shadow: 0 0 10px 0 var(--color);
+	border-radius: 8px;
+	transition: color 0.3s, background 0.3s, opacity 0.3s;
+
+	&:disabled {
+		opacity: 0.5;
+	}
+
+	&:not(:disabled):hover {
+		color: var(--color);
+		background: none;
+	}
+}
+
+.spinner {
+	@include spinner.options(16px, 3px, white);
+}
+
+.error {
+	margin-left: 16px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #e53e3e;
+}

@@ -1,0 +1,28 @@
+@use 'styles/z-index';
+
+.root {
+	display: flex;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: z-index.$modal;
+	background: transparentize(black, 0.5);
+	transition: background 0.3s;
+
+	&[aria-hidden='true'] {
+		pointer-events: none;
+		background: transparent;
+
+		.content {
+			opacity: 0;
+			transform: translateY(-20px);
+		}
+	}
+}
+
+.content {
+	margin: auto;
+	transition: opacity 0.3s, transform 0.3s;
+}
