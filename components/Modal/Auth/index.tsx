@@ -4,9 +4,9 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import cx from 'classnames'
 
 import Modal, { IsModalShowingProps } from '..'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
-import Spinner from 'components/Spinner'
 
 export interface AuthModalProps extends IsModalShowingProps {
 	className: string
