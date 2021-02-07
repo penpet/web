@@ -8,3 +8,11 @@
 	border: none;
 	outline: none;
 }
+
+button {
+	cursor: pointer;
+
+	&:disabled {
+		cursor: default;
+	}
+}
