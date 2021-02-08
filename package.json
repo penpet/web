@@ -4,8 +4,7 @@
 	"scripts": {
 		"lint": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit && eslint .",
 		"format": "prettier --write .",
-		"web": "next",
-		"dev": "NODE_ENV=development ts-node-dev --project tsconfig.server.json -- server",
+		"dev": "NODE_ENV=development ts-node-dev --project tsconfig.server.json --ignore-watch client-build -- server",
 		"build": "next build && tsc -p tsconfig.server.json",
 		"start": "node server-build"
 	},

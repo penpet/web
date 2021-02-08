@@ -8,8 +8,7 @@ const DEV = process.env.NODE_ENV === 'development'
 const PUBLIC_ORIGIN = process.env.NEXT_PUBLIC_ORIGIN
 if (!PUBLIC_ORIGIN) throw new Error('Missing public origin')
 
-const ORIGIN = DEV ? 'http://localhost:3000' : PUBLIC_ORIGIN
-const API_ORIGIN = DEV ? 'http://localhost:5000' : PUBLIC_ORIGIN
+const ORIGIN = DEV ? 'http://localhost:5000' : PUBLIC_ORIGIN
 
 const plugins = [
 	[require('next-optimized-classnames')],
@@ -28,7 +27,6 @@ const config = {
 					value: getCSP({
 						directives: {
 							'default-src': [SELF],
-							'connect-src': [SELF, ...(DEV ? [API_ORIGIN] : [])],
 							'style-src': [SELF, INLINE],
 							'script-src': [SELF, ...(DEV ? [EVAL] : [])],
 							'base-uri': SELF,

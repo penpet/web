@@ -1,7 +1,7 @@
 import { useState, useCallback, ChangeEvent } from 'react'
 
 import Pal from 'models/Pal'
-import { API_ORIGIN } from 'lib/constants'
+import { ORIGIN } from 'lib/constants'
 import { IsModalShowingProps } from '..'
 import Modal from '../Auth'
 
@@ -22,7 +22,7 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 		try {
 			setIsLoading(true)
 
-			const response = await fetch(`${API_ORIGIN}/auth/log-in`, {
+			const response = await fetch(`${ORIGIN}/auth/log-in`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password })
