@@ -5,11 +5,11 @@ const { getCSP, SELF, INLINE, EVAL } = require('csp-header')
 
 const DEV = process.env.NODE_ENV === 'development'
 
-const API_ORIGIN = DEV
-	? 'http://localhost:5000'
-	: 'https://penpet.herokuapp.com'
+const PUBLIC_ORIGIN = process.env.NEXT_PUBLIC_ORIGIN
+if (!PUBLIC_ORIGIN) throw new Error('Missing public origin')
 
-const ORIGIN = DEV ? 'http://localhost:3000' : API_ORIGIN
+const ORIGIN = DEV ? 'http://localhost:3000' : PUBLIC_ORIGIN
+const API_ORIGIN = DEV ? 'http://localhost:5000' : PUBLIC_ORIGIN
 
 const plugins = [
 	[require('next-optimized-classnames')],
