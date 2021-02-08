@@ -1,6 +1,5 @@
 **/*.DS_Store
 node_modules/
-.vercel/
-.next/
-out/
+server-build/
+client-build/
 .env

@@ -6,9 +6,8 @@ import { API_ORIGIN } from './constants'
 const getPal = async ({ req }: NextPageContext): Promise<Pal | null> => {
 	try {
 		const cookie = req?.headers.cookie
-		console.log(cookie)
+
 		const response = await fetch(`${API_ORIGIN}/auth`, {
-			credentials: 'include',
 			headers: cookie ? { cookie } : undefined
 		})
 

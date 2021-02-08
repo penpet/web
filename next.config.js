@@ -1,14 +1,15 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const { getCSP, SELF, INLINE, EVAL, DATA } = require('csp-header')
+const { getCSP, SELF, INLINE, EVAL } = require('csp-header')
 
 const DEV = process.env.NODE_ENV === 'development'
 
-const ORIGIN = DEV ? 'http://localhost:3000' : 'https://pen.pet'
 const API_ORIGIN = DEV
 	? 'http://localhost:5000'
 	: 'https://penpet.herokuapp.com'
+
+const ORIGIN = DEV ? 'http://localhost:3000' : API_ORIGIN
 
 const plugins = [
 	[require('next-optimized-classnames')],
@@ -16,6 +17,7 @@ const plugins = [
 ]
 
 const config = {
+	distDir: 'client-build',
 	headers: () => [
 		{
 			source: '/(.*)',
@@ -26,12 +28,12 @@ const config = {
 					value: getCSP({
 						directives: {
 							'default-src': [SELF],
-							'connect-src': [SELF, API_ORIGIN],
+							'connect-src': [SELF, ...(DEV ? [API_ORIGIN] : [])],
 							'style-src': [SELF, INLINE],
 							'script-src': [SELF, ...(DEV ? [EVAL] : [])],
 							'base-uri': SELF,
-							'block-all-mixed-content': !DEV,
-							'upgrade-insecure-requests': !DEV
+							'block-all-mixed-content': true,
+							'upgrade-insecure-requests': true
 						}
 					})
 				},

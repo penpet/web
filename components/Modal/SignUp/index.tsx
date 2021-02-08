@@ -25,7 +25,6 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 			const response = await fetch(`${API_ORIGIN}/auth/sign-up`, {
 				method: 'POST',
-				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ name, email, password })
 			})

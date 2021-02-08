@@ -24,7 +24,6 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 			const response = await fetch(`${API_ORIGIN}/auth/log-in`, {
 				method: 'POST',
-				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password })
 			})
