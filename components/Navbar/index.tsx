@@ -1,16 +1,15 @@
 import { useState, useCallback } from 'react'
+import { useRecoilValue } from 'recoil'
 
-import User from 'models/User'
+import palState from 'state/pal'
 import LogInModal from 'components/Modal/LogIn'
 import SignUpModal from 'components/Modal/SignUp'
 
 import styles from './index.module.scss'
 
-export interface NavbarProps {
-	user: User | null
-}
+const Navbar = () => {
+	const pal = useRecoilValue(palState)
 
-const Navbar = ({ user }: NavbarProps) => {
 	const [isLogInModalShowing, setIsLogInModalShowing] = useState(false)
 	const [isSignUpModalShowing, setIsSignUpModalShowing] = useState(false)
 
@@ -25,8 +24,8 @@ const Navbar = ({ user }: NavbarProps) => {
 	return (
 		<nav className={styles.root}>
 			<h1 className={styles.title}>penpet</h1>
-			{user ? (
-				user.name
+			{pal ? (
+				pal.name
 			) : (
 				<>
 					<button className={styles.logIn} onClick={showLogInModal}>
@@ -35,16 +34,16 @@ const Navbar = ({ user }: NavbarProps) => {
 					<button className={styles.signUp} onClick={showSignUpModal}>
 						Sign up
 					</button>
-					<LogInModal
-						isShowing={isLogInModalShowing}
-						setIsShowing={setIsLogInModalShowing}
-					/>
-					<SignUpModal
-						isShowing={isSignUpModalShowing}
-						setIsShowing={setIsSignUpModalShowing}
-					/>
 				</>
 			)}
+			<LogInModal
+				isShowing={isLogInModalShowing}
+				setIsShowing={setIsLogInModalShowing}
+			/>
+			<SignUpModal
+				isShowing={isSignUpModalShowing}
+				setIsShowing={setIsSignUpModalShowing}
+			/>
 		</nav>
 	)
 }

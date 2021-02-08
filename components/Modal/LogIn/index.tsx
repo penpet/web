@@ -1,5 +1,6 @@
 import { useState, useCallback, ChangeEvent } from 'react'
 
+import Pal from 'models/Pal'
 import { API_ORIGIN } from 'lib/constants'
 import { IsModalShowingProps } from '..'
 import Modal from '../Auth'
@@ -15,7 +16,7 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 	const isDisabled = !(email && password)
 
-	const onSubmit = useCallback(async () => {
+	const onSubmit = useCallback(async (): Promise<Pal | void> => {
 		if (isLoading || isDisabled) return
 
 		try {
@@ -28,7 +29,8 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 				body: JSON.stringify({ email, password })
 			})
 
-			if (!response.ok) throw new Error(await response.text())
+			if (response.ok) return response.json()
+			throw new Error(await response.text())
 		} catch (error) {
 			setErrorMessage(
 				error instanceof Error ? error.message : 'An unknown error occurred'

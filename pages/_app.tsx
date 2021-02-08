@@ -1,7 +1,9 @@
 import App, { AppProps, AppContext } from 'next/app'
+import { RecoilRoot } from 'recoil'
 import { config } from '@fortawesome/fontawesome-svg-core'
 
-import getUser from 'lib/getUser'
+import getPal from 'lib/getPal'
+import initializeState from 'state'
 import Layout from 'components/Layout'
 
 import 'styles/global.scss'
@@ -9,19 +11,21 @@ import 'styles/global.scss'
 config.autoAddCss = false
 
 const CustomApp = ({ Component, pageProps }: AppProps) => (
-	<Layout user={pageProps.user}>
-		<Component {...pageProps} />
-	</Layout>
+	<RecoilRoot initializeState={initializeState(pageProps)}>
+		<Layout>
+			<Component {...pageProps} />
+		</Layout>
+	</RecoilRoot>
 )
 
 CustomApp.getInitialProps = async (context: AppContext) => {
-	const [{ pageProps }, user] = await Promise.all([
+	const [{ pageProps }, pal] = await Promise.all([
 		App.getInitialProps(context),
-		getUser(context.ctx)
+		getPal(context.ctx)
 	])
 
 	return {
-		pageProps: { ...pageProps, user }
+		pageProps: { ...pageProps, pal }
 	}
 }
 

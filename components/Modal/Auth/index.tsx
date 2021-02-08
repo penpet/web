@@ -1,8 +1,11 @@
-import { ReactNode, FormEvent, useCallback } from 'react'
+import { ReactNode, FormEvent, useCallback, useEffect } from 'react'
+import { useRecoilState } from 'recoil'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import cx from 'classnames'
 
+import Pal from 'models/Pal'
+import palState from 'state/pal'
 import Modal, { IsModalShowingProps } from '..'
 import Spinner from 'components/Spinner'
 
@@ -14,7 +17,7 @@ export interface AuthModalProps extends IsModalShowingProps {
 	isLoading: boolean
 	isDisabled: boolean
 	errorMessage: string | null
-	onSubmit(): void
+	onSubmit(): Promise<Pal | void>
 	children?: ReactNode
 }
 
@@ -29,17 +32,26 @@ const AuthModal = ({
 	setIsShowing,
 	children
 }: AuthModalProps) => {
+	const [pal, setPal] = useRecoilState(palState)
+	const isAuthorized = Boolean(pal)
+
 	const onSubmitEvent = useCallback(
-		(event: FormEvent<HTMLFormElement>) => {
+		async (event: FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
-			onSubmit()
+
+			const pal = await onSubmit()
+			if (pal) setPal(pal)
 		},
-		[onSubmit]
+		[onSubmit, setPal]
 	)
 
 	const hide = useCallback(() => {
 		setIsShowing(false)
 	}, [setIsShowing])
+
+	useEffect(() => {
+		if (isAuthorized) setIsShowing(false)
+	}, [isAuthorized, setIsShowing])
 
 	return (
 		<Modal
