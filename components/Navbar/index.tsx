@@ -29,10 +29,10 @@ const Navbar = () => {
 			) : (
 				<>
 					<button className={styles.logIn} onClick={showLogInModal}>
-						Log in
+						log in
 					</button>
 					<button className={styles.signUp} onClick={showSignUpModal}>
-						Sign up
+						sign up
 					</button>
 				</>
 			)}

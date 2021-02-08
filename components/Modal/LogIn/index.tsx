@@ -56,7 +56,7 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 	return (
 		<Modal
 			className={styles.root}
-			title="Log in"
+			title="log in"
 			isLoading={isLoading}
 			isDisabled={isDisabled}
 			errorMessage={errorMessage}
@@ -64,7 +64,7 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 			isShowing={isShowing}
 			setIsShowing={setIsShowing}
 		>
-			<label htmlFor="log-in-modal-email-input">Email</label>
+			<label htmlFor="log-in-modal-email-input">email</label>
 			<input
 				id="log-in-modal-email-input"
 				type="email"
@@ -73,7 +73,7 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 				value={email}
 				onChange={onEmailChange}
 			/>
-			<label htmlFor="log-in-modal-password-input">Password</label>
+			<label htmlFor="log-in-modal-password-input">password</label>
 			<input
 				id="log-in-modal-password-input"
 				type="password"

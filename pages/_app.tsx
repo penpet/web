@@ -1,5 +1,6 @@
 import App, { AppProps, AppContext } from 'next/app'
 import { RecoilRoot } from 'recoil'
+import { ToastContainer } from 'react-toastify'
 import { config } from '@fortawesome/fontawesome-svg-core'
 
 import getPal from 'lib/getPal'
@@ -15,6 +16,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
 		<Layout>
 			<Component {...pageProps} />
 		</Layout>
+		<ToastContainer />
 	</RecoilRoot>
 )
 

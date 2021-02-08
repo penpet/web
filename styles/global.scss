@@ -1,4 +1,5 @@
 @use '~@fortawesome/fontawesome-svg-core/styles';
+@use '~react-toastify/dist/ReactToastify';
 
 @font-face {
 	font-family: OperatorMono;
@@ -32,4 +33,10 @@ button {
 	&:disabled {
 		cursor: default;
 	}
+}
+
+.Toastify__toast {
+	font-weight: bold;
+	padding-left: 16px;
+	border-radius: 5px;
 }

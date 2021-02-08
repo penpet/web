@@ -73,7 +73,7 @@ const AuthModal = ({
 						disabled={isDisabled}
 						aria-busy={isLoading}
 					>
-						{isLoading ? <Spinner className={styles.spinner} /> : 'Next'}
+						{isLoading ? <Spinner className={styles.spinner} /> : 'next'}
 					</button>
 					{errorMessage && <p className={styles.error}>{errorMessage}</p>}
 				</footer>

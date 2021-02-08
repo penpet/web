@@ -1,23 +1,14 @@
-import { Router, RequestHandler } from 'express'
+import { Router } from 'express'
 import bodyParser from 'body-parser'
 import passport from 'passport'
 
-import Pal, { palToPublic } from '../models/Pal'
-import { createPal } from '../auth'
+import Pal, { palToPublic, createPal } from '../models/Pal'
+import HttpError from '../utils/HttpError'
+import { assertAuthenticated, assertUnauthenticated } from '../utils/assert'
 
-import '../auth/passport'
+import '../passport'
 
 const router = Router()
-
-const assertAuthenticated: RequestHandler = (req, res, next) => {
-	if (req.isAuthenticated()) return next()
-	res.status(401).send('Not logged in')
-}
-
-const assertUnauthenticated: RequestHandler = (req, res, next) => {
-	if (!req.isAuthenticated()) return next()
-	res.status(401).send('Already logged in')
-}
 
 router.options(
 	['/auth/log-in', '/auth/sign-up', '/auth/sign-out'],
@@ -42,7 +33,7 @@ router.post(
 			const user = await new Promise<Pal>((resolve, reject) => {
 				passport.authenticate('local', (error, user: Pal | null) => {
 					if (error) return reject(error)
-					if (!user) return reject(new Error('No such user exists'))
+					if (!user) return reject(new HttpError(404, 'No such user exists'))
 
 					req.logIn(user, error => {
 						error ? reject(error) : resolve(user)
@@ -53,7 +44,9 @@ router.post(
 			res.send(palToPublic(user))
 		} catch (error) {
 			console.error(error)
-			res.status(401).send(error instanceof Error ? error.message : error)
+			res
+				.status(error instanceof HttpError ? error.status : 401)
+				.send(error instanceof Error ? error.message : error)
 		}
 	}
 )
@@ -73,7 +66,7 @@ router.post(
 					body
 				)
 			)
-				return res.status(400).send('Invalid body')
+				throw new HttpError(400, 'Invalid body')
 
 			const { name, email, password } = body
 
@@ -84,7 +77,7 @@ router.post(
 					typeof password === 'string'
 				)
 			)
-				return res.status(400).send('Invalid body')
+				throw new HttpError(400, 'Invalid body')
 
 			const pal = await createPal(name, email, password)
 
@@ -97,7 +90,9 @@ router.post(
 			res.send(palToPublic(pal))
 		} catch (error) {
 			console.error(error)
-			res.status(401).send(error instanceof Error ? error.message : error)
+			res
+				.status(error instanceof HttpError ? error.status : 401)
+				.send(error instanceof Error ? error.message : error)
 		}
 	}
 )

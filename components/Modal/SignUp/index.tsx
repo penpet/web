@@ -64,7 +64,7 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 	return (
 		<Modal
 			className={styles.root}
-			title="Sign up"
+			title="sign up"
 			isLoading={isLoading}
 			isDisabled={isDisabled}
 			errorMessage={errorMessage}
@@ -72,7 +72,7 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 			isShowing={isShowing}
 			setIsShowing={setIsShowing}
 		>
-			<label htmlFor="sign-up-modal-name-input">Name</label>
+			<label htmlFor="sign-up-modal-name-input">name</label>
 			<input
 				id="sign-up-modal-name-input"
 				autoComplete="name"
@@ -80,7 +80,7 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 				value={name}
 				onChange={onNameChange}
 			/>
-			<label htmlFor="sign-up-modal-email-input">Email</label>
+			<label htmlFor="sign-up-modal-email-input">email</label>
 			<input
 				id="sign-up-modal-email-input"
 				type="email"
@@ -89,7 +89,7 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 				value={email}
 				onChange={onEmailChange}
 			/>
-			<label htmlFor="sign-up-modal-password-input">Password</label>
+			<label htmlFor="sign-up-modal-password-input">password</label>
 			<input
 				id="sign-up-modal-password-input"
 				type="password"
