@@ -1,6 +1,8 @@
 @use 'styles/colors';
 @use 'styles/spinner';
 
+$color: var(--color);
+
 .root {
 	max-width: 95%;
 	width: 600px;
@@ -22,9 +24,9 @@
 	display: flex;
 	overflow: hidden;
 	font-size: 26px;
-	color: var(--color);
+	color: $color;
 	background: white;
-	box-shadow: 0 0 10px 0 var(--color);
+	box-shadow: 0 0 10px 0 $color;
 	border-radius: 50%;
 	transition: opacity 0.3s;
 
@@ -84,17 +86,21 @@
 	font-size: 18px;
 	font-weight: 900;
 	color: white;
-	background: var(--color);
-	box-shadow: 0 0 10px 0 var(--color);
+	background: $color;
+	box-shadow: 0 0 10px 0 $color;
 	border-radius: 8px;
 	transition: color 0.3s, background 0.3s, opacity 0.3s;
+
+	&[aria-busy='true'] {
+		pointer-events: none;
+	}
 
 	&:disabled {
 		opacity: 0.5;
 	}
 
 	&:not(:disabled):hover {
-		color: var(--color);
+		color: $color;
 		background: none;
 	}
 }

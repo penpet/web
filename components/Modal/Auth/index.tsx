@@ -68,7 +68,11 @@ const AuthModal = ({
 				</header>
 				<div className={styles.fields}>{children}</div>
 				<footer className={styles.details}>
-					<button className={styles.submit} disabled={isDisabled}>
+					<button
+						className={styles.submit}
+						disabled={isDisabled}
+						aria-busy={isLoading}
+					>
 						{isLoading ? <Spinner className={styles.spinner} /> : 'Next'}
 					</button>
 					{errorMessage && <p className={styles.error}>{errorMessage}</p>}
