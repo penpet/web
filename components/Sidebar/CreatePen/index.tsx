@@ -1,20 +1,21 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
-import createPet from 'lib/createPet'
+import createPen from 'lib/createPen'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
+import { SOCKET_ORIGIN } from 'lib/constants'
 
-const SidebarCreatePet = () => {
+const SidebarCreatePen = () => {
 	const [isLoading, setIsLoading] = useState(false)
 
-	const onCreatePet = useCallback(async () => {
+	const onCreatePen = useCallback(async () => {
 		try {
 			setIsLoading(true)
-			await createPet()
+			await createPen()
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'An unknown error occurred'
@@ -24,12 +25,26 @@ const SidebarCreatePet = () => {
 		}
 	}, [setIsLoading])
 
+	useEffect(() => {
+		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens`)
+
+		socket.addEventListener('message', ({ data }) => {
+			console.log('DATA:', data)
+		})
+
+		socket.addEventListener('error', () => {
+			toast.error('An unknown error occurred')
+		})
+
+		return () => socket.close()
+	}, [])
+
 	return (
 		<div className={styles.root}>
-			<h3 className={styles.title}>my pets</h3>
+			<h3 className={styles.title}>my pens</h3>
 			<button
 				className={styles.button}
-				onClick={onCreatePet}
+				onClick={onCreatePen}
 				aria-busy={isLoading}
 			>
 				{isLoading ? (
@@ -42,4 +57,4 @@ const SidebarCreatePet = () => {
 	)
 }
 
-export default SidebarCreatePet
+export default SidebarCreatePen

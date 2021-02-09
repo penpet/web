@@ -19,6 +19,7 @@
 		"csp-header": "^2.1.2",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
+		"express-ws": "^4.0.0",
 		"nanoid": "^3.1.20",
 		"next": "^10.0.6",
 		"next-compose-plugins": "^2.2.1",
@@ -32,7 +33,7 @@
 		"react-toastify": "^7.0.3",
 		"recoil": "^0.1.2",
 		"sass": "^1.32.6",
-		"socket.io": "^3.1.1"
+		"swr": "^0.4.2"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
@@ -40,6 +41,7 @@
 		"@types/connect-pg-simple": "^4.2.2",
 		"@types/express": "^4.17.11",
 		"@types/express-session": "^1.17.3",
+		"@types/express-ws": "^3.0.0",
 		"@types/node": "^14.14.25",
 		"@types/passport": "^1.0.6",
 		"@types/passport-local": "^1.0.33",

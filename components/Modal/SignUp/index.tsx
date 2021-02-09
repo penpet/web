@@ -1,7 +1,7 @@
 import { useState, useCallback, ChangeEvent } from 'react'
 
 import Pal from 'models/Pal'
-import { ORIGIN } from 'lib/constants'
+import fetch from 'lib/fetch'
 import { IsModalShowingProps } from '..'
 import Modal from '../Auth'
 
@@ -17,20 +17,17 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 	const isDisabled = !(name && email && password)
 
-	const onSubmit = useCallback(async (): Promise<Pal | void> => {
+	const onSubmit = useCallback(async () => {
 		if (isLoading || isDisabled) return
 
 		try {
 			setIsLoading(true)
 
-			const response = await fetch(`${ORIGIN}/auth/sign-up`, {
+			return fetch<Pal>('auth/sign-up', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ name, email, password })
 			})
-
-			if (response.ok) return response.json()
-			throw new Error(await response.text())
 		} catch (error) {
 			setErrorMessage(
 				error instanceof Error ? error.message : 'An unknown error occurred'

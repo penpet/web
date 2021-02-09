@@ -4,7 +4,7 @@ import passport from 'passport'
 import session from './session'
 import cors from './cors'
 import auth from './auth'
-import pet from './pet'
+import pen from './pen'
 
 const router = Router()
 
@@ -15,6 +15,6 @@ router.use(passport.initialize())
 router.use(passport.session())
 
 router.use(auth)
-router.use(pet)
+router.use(pen)
 
 export default router

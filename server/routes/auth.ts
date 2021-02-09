@@ -4,6 +4,7 @@ import passport from 'passport'
 
 import Pal, { palToPublic, createPal } from '../models/Pal'
 import HttpError from '../utils/HttpError'
+import sendError from '../utils/sendError'
 import { assertAuthenticated, assertUnauthenticated } from '../utils/assert'
 
 import '../passport'
@@ -44,9 +45,7 @@ router.post(
 			res.send(palToPublic(user))
 		} catch (error) {
 			console.error(error)
-			res
-				.status(error instanceof HttpError ? error.status : 401)
-				.send(error instanceof Error ? error.message : error)
+			sendError(res, error, 401)
 		}
 	}
 )
@@ -90,9 +89,7 @@ router.post(
 			res.send(palToPublic(pal))
 		} catch (error) {
 			console.error(error)
-			res
-				.status(error instanceof HttpError ? error.status : 401)
-				.send(error instanceof Error ? error.message : error)
+			sendError(res, error, 401)
 		}
 	}
 )

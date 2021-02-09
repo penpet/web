@@ -17,7 +17,7 @@ export interface AuthModalProps extends IsModalShowingProps {
 	isLoading: boolean
 	isDisabled: boolean
 	errorMessage: string | null
-	onSubmit(): Promise<Pal | void>
+	onSubmit(): Promise<Pal | undefined>
 	children?: ReactNode
 }
 

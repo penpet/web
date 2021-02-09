@@ -1,12 +1,20 @@
 import { MutableSnapshot } from 'recoil'
 
 import Pal from 'models/Pal'
+import { PenData, penFromData } from 'models/Pen'
 import palState from './pal'
+import pensState from './pens'
 
-export type StateProps = Record<string, unknown>
+export interface InitialState {
+	pal: Pal | null
+	pens: PenData[]
+}
 
-const initializeState = (props: StateProps) => (state: MutableSnapshot) => {
-	state.set(palState, props.pal as Pal | null)
+const initializeState = (state: InitialState) => (
+	snapshot: MutableSnapshot
+) => {
+	snapshot.set(palState, state.pal)
+	snapshot.set(pensState, state.pens.map(penFromData))
 }
 
 export default initializeState

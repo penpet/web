@@ -3,7 +3,7 @@ import { RecoilRoot } from 'recoil'
 import { ToastContainer } from 'react-toastify'
 import { config } from '@fortawesome/fontawesome-svg-core'
 
-import getPal from 'lib/getPal'
+import getInitialState from 'lib/getInitialState'
 import initializeState from 'state'
 import Layout from 'components/Layout'
 
@@ -21,13 +21,13 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
 )
 
 CustomApp.getInitialProps = async (context: AppContext) => {
-	const [{ pageProps }, pal] = await Promise.all([
+	const [{ pageProps: props }, state] = await Promise.all([
 		App.getInitialProps(context),
-		getPal(context.ctx)
+		getInitialState(context.ctx)
 	])
 
 	return {
-		pageProps: { ...pageProps, pal }
+		pageProps: { ...props, ...state }
 	}
 }
 

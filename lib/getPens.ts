@@ -1,14 +1,14 @@
 import { NextPageContext } from 'next'
 
-import Pal from 'models/Pal'
+import { PenData } from 'models/Pen'
 import fetch from 'lib/fetch'
 
-const getPal = async ({ req }: NextPageContext) => {
+const getPens = async ({ req }: NextPageContext) => {
 	const cookie = req?.headers.cookie
 
-	return fetch<Pal | null>('auth', {
+	return fetch<PenData[]>('pens', {
 		headers: cookie ? { cookie } : undefined
 	})
 }
 
-export default getPal
+export default getPens

@@ -1,17 +1,15 @@
 import express from 'express'
+import ws from 'express-ws'
 import next from 'next'
-import { join } from 'path'
+
+const app = express()
+ws(app)
 
 import routes from './routes'
 import database from './database'
-import { PORT } from './constants'
+import { DEV, ROOT, PORT } from './constants'
 
-const app = express()
-
-const nextApp = next({
-	dev: process.env.NODE_ENV === 'development',
-	dir: join(__dirname, '..')
-})
+const nextApp = next({ dev: DEV, dir: ROOT })
 const nextRequestHandler = nextApp.getRequestHandler()
 
 app.set('trust proxy', 1)
