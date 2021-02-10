@@ -28,7 +28,11 @@ const config = {
 						directives: {
 							'default-src': [SELF],
 							'style-src': [SELF, INLINE],
-							'script-src': [SELF, ...(DEV ? [EVAL] : [])],
+							'script-src': [
+								SELF,
+								...(DEV ? [EVAL] : []),
+								"'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='" // Render-blocking script
+							],
 							'base-uri': SELF,
 							'block-all-mixed-content': true,
 							'upgrade-insecure-requests': true
