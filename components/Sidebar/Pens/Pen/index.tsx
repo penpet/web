@@ -15,7 +15,7 @@ const SidebarPen = ({ pen }: SidebarPenProps) => {
 
 	return (
 		<Link href={`/${pen.id}`}>
-			<a className={styles.root} aria-selected={pen.id === id}>
+			<a className={styles.root} aria-current={pen.id === id && 'page'}>
 				<span className={styles.name}>{pen.name}</span>
 				<span className={styles.info}>
 					<span>{formatTimeAgo(pen.updated)}</span>

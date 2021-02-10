@@ -1,5 +1,1 @@
-import { NextPage } from 'next'
-
-const PenPage: NextPage = () => null
-
-export default PenPage
+export { default } from 'components/Pen'

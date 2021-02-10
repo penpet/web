@@ -10,7 +10,7 @@
 	border-radius: 8px;
 	transition: background 0.3s;
 
-	&[aria-selected='true'] {
+	&[aria-current='page'] {
 		background: colors.$purple;
 	}
 

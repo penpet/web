@@ -16,7 +16,16 @@ router.get('/pens', assertAuthenticated, async ({ user }, res) => {
 	try {
 		res.send(await getPens(user as Pal))
 	} catch (error) {
+		console.error(error)
 		sendError(res, error, 401)
+	}
+})
+
+router.ws('/pens/:id', async (socket, req) => {
+	try {
+		if (req.isUnauthenticated()) return socket.close()
+	} catch (error) {
+		console.error(error)
 	}
 })
 
@@ -24,6 +33,7 @@ router.post('/pens', assertAuthenticated, async ({ user }, res) => {
 	try {
 		res.send(await createPen(user as Pal))
 	} catch (error) {
+		console.error(error)
 		sendError(res, error, 401)
 	}
 })

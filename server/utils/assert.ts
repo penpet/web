@@ -6,6 +6,6 @@ export const assertAuthenticated: RequestHandler = (req, res, next) => {
 }
 
 export const assertUnauthenticated: RequestHandler = (req, res, next) => {
-	if (!req.isAuthenticated()) return next()
+	if (req.isUnauthenticated()) return next()
 	res.status(401).send('Already logged in')
 }

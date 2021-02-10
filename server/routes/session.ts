@@ -2,6 +2,8 @@ import session from 'express-session'
 import store from 'connect-pg-simple'
 import { Pool } from 'pg'
 
+import { DEV } from '../constants'
+
 const MAX_AGE = 1000 * 60 * 60 * 24 * 365 * 10
 
 const databaseUrl = process.env.DATABASE_URL
@@ -20,9 +22,5 @@ export default session({
 	secret,
 	resave: false,
 	saveUninitialized: false,
-	cookie: {
-		maxAge: MAX_AGE,
-		secure: process.env.NODE_ENV === 'production',
-		sameSite: true
-	}
+	cookie: { maxAge: MAX_AGE, secure: !DEV, sameSite: true }
 })
