@@ -13,6 +13,10 @@
 	&[aria-selected='true'] {
 		background: colors.$purple;
 	}
+
+	& + & {
+		margin-top: 12px;
+	}
 }
 
 .info {
