@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
 
-const Home: NextPage = () => <></>
+const Home: NextPage = () => null
 
 export default Home

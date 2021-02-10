@@ -5,6 +5,7 @@ import useSWR from 'swr'
 
 import { PenData, penFromData } from 'models/Pen'
 import fetch from 'lib/fetch'
+import sortPens from 'lib/sortPens'
 import palState from 'state/pal'
 import pensState from 'state/pens'
 
@@ -13,14 +14,7 @@ const usePens = () => {
 	const initialPens = useRecoilValue(pensState)
 
 	const { data, error } = useSWR<PenData[], unknown>(pal && 'pens', fetch)
-
-	const pens = useMemo(
-		() =>
-			data
-				?.map(penFromData)
-				.sort((a, b) => b.updated.getTime() - a.updated.getTime()),
-		[data]
-	)
+	const pens = useMemo(() => data && sortPens(data.map(penFromData)), [data])
 
 	useEffect(() => {
 		if (error)
