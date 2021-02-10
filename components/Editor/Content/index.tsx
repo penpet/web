@@ -6,7 +6,7 @@ import Quill from 'quill'
 
 import { SOCKET_ORIGIN } from 'lib/constants'
 
-import 'quill/dist/quill.bubble.css'
+import styles from './index.module.scss'
 
 ShareDB.types.register(richText.type)
 
@@ -15,11 +15,14 @@ export interface EditorContentProps {
 }
 
 const EditorContent = ({ penId }: EditorContentProps) => {
-	const ref = useRef<HTMLDivElement | null>(null)
+	const toolbarRef = useRef<HTMLDivElement | null>(null)
+	const contentRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
-		const element = ref.current
-		if (!(penId && element)) return
+		const toolbar = toolbarRef.current
+		const content = contentRef.current
+
+		if (!(penId && toolbar && content)) return
 
 		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${penId}`)
 		const connection = new ShareDB.Connection(socket as any)
@@ -29,11 +32,9 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 		doc.subscribe(error => {
 			if (error) return toast.error(error.message)
 
-			const quill = new Quill(element, {
-				theme: 'bubble',
-				modules: {
-					toolbar: ['bold', 'italic', 'underline', 'strike', 'align']
-				}
+			const quill = new Quill(content, {
+				theme: 'snow',
+				modules: { toolbar }
 			})
 
 			quill.setContents(doc.data)
@@ -50,9 +51,57 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 		})
 
 		return () => connection.close()
-	}, [penId, ref])
+	}, [penId, toolbarRef, contentRef])
 
-	return <div ref={ref} />
+	return (
+		<div className={styles.root}>
+			<div ref={toolbarRef}>
+				<span className="ql-formats">
+					<select className="ql-size" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-bold" />
+					<button className="ql-italic" />
+					<button className="ql-underline" />
+					<button className="ql-strike" />
+				</span>
+				<span className="ql-formats">
+					<select className="ql-color" />
+					<select className="ql-background" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-script" value="sub" />
+					<button className="ql-script" value="super" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-header" value="1" />
+					<button className="ql-header" value="2" />
+					<button className="ql-blockquote" />
+					<button className="ql-code-block" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-list" value="ordered" />
+					<button className="ql-list" value="bullet" />
+					<button className="ql-indent" value="-1" />
+					<button className="ql-indent" value="+1" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-direction" value="rtl" />
+					<select className="ql-align" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-link" />
+					<button className="ql-image" />
+					<button className="ql-video" />
+					<button className="ql-formula" />
+				</span>
+				<span className="ql-formats">
+					<button className="ql-clean" />
+				</span>
+			</div>
+			<div ref={contentRef} />
+		</div>
+	)
 }
 
 export default EditorContent

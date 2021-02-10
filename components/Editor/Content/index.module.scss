@@ -1,6 +1,64 @@
-.root {
-	display: grid;
-	grid: auto 1fr / 1fr;
-	width: 100%;
-	height: 100%;
+@use 'styles/colors';
+
+$selected: colors.$pink;
+
+.root :global {
+	@import 'quill/dist/quill.snow';
+
+	.ql-picker,
+	.ql-formats > button {
+		border-radius: 8px !important;
+		transition: background 0.3s !important;
+
+		&:hover {
+			background: transparentize(white, 0.9) !important;
+		}
+	}
+
+	.ql-fill {
+		fill: white !important;
+		transition: fill 0.3s !important;
+	}
+
+	.ql-stroke {
+		stroke: white !important;
+		transition: stroke 0.3s !important;
+	}
+
+	.ql-picker-label {
+		color: white !important;
+		transition: color 0.3s !important;
+	}
+
+	.ql-toolbar,
+	.ql-container,
+	.ql-picker-label {
+		border: none !important;
+	}
+
+	.ql-picker-options {
+		margin-top: 4px !important;
+		background: colors.$background !important;
+		border: 1px solid colors.$border !important;
+		border-radius: 8px !important;
+
+		> span {
+			color: white !important;
+			transition: color 0.3s !important;
+		}
+	}
+
+	.ql-selected,
+	.ql-active,
+	.ql-picker-options > span:hover {
+		color: $selected !important;
+
+		.ql-fill {
+			fill: $selected !important;
+		}
+
+		.ql-stroke {
+			stroke: $selected !important;
+		}
+	}
 }
