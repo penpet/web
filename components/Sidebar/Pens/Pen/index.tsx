@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import Pen from 'models/Pen'
+import PenQuery from 'models/PenQuery'
 import formatTimeAgo from 'lib/formatTimeAgo'
 
 import styles from './index.module.scss'
@@ -11,7 +12,7 @@ export interface SidebarPenProps {
 }
 
 const SidebarPen = ({ pen }: SidebarPenProps) => {
-	const { id } = useRouter().query
+	const { id } = useRouter().query as PenQuery
 
 	return (
 		<Link href={`/${pen.id}`}>

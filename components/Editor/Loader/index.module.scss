@@ -1,0 +1,13 @@
+@use 'styles/spinner';
+
+.root {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.spinner {
+	@include spinner.options(20px, 3px, white);
+}

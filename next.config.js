@@ -10,10 +10,7 @@ if (!PUBLIC_ORIGIN) throw new Error('Missing public origin')
 
 const ORIGIN = DEV ? 'http://localhost:5000' : PUBLIC_ORIGIN
 
-const plugins = [
-	[require('next-optimized-classnames')],
-	[require('next-optimized-images')]
-]
+const plugins = [[require('next-optimized-images')]]
 
 const config = {
 	distDir: 'client-build',

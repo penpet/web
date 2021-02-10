@@ -1,15 +1,8 @@
-import Toolbar from './Toolbar'
-import Content from './Content'
+import dynamic from 'next/dynamic'
 
-import styles from './index.module.scss'
+import Loader from './Loader'
 
-const Editor = () => {
-	return (
-		<div className={styles.root}>
-			<Toolbar />
-			<Content />
-		</div>
-	)
-}
-
-export default Editor
+export default dynamic(() => import('./Content'), {
+	ssr: false,
+	loading: () => <Loader />
+})

@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import Pal from '../models/Pal'
 import { getPens, createPen } from '../models/Pen'
+import edit from '../models/Editor'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
 
@@ -23,7 +24,10 @@ router.get('/pens', assertAuthenticated, async ({ user }, res) => {
 
 router.ws('/pens/:id', async (socket, req) => {
 	try {
-		if (req.isUnauthenticated()) return socket.close()
+		const { id } = req.params
+		if (typeof id !== 'string' || req.isUnauthenticated()) return socket.close()
+
+		await edit(id, socket)
 	} catch (error) {
 		console.error(error)
 	}
