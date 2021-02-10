@@ -6,7 +6,7 @@ $spacing: 12px;
 .root {
 	position: relative;
 	height: $height + $spacing;
-	margin: 0 16px $spacing;
+	margin: 0 16px;
 	padding-bottom: $spacing;
 	border-bottom: 1px solid colors.$border;
 }

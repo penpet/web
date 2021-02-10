@@ -1,4 +1,5 @@
 import usePens from 'hooks/usePens'
+import Pen from './Pen'
 
 import styles from './index.module.scss'
 
@@ -8,7 +9,7 @@ const SidebarPens = () => {
 	return (
 		<div className={styles.root}>
 			{pens.map(pen => (
-				<p key={pen.id}>{pen.name}</p>
+				<Pen key={pen.id} pen={pen} />
 			))}
 		</div>
 	)
