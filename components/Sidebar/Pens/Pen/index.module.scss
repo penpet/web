@@ -1,3 +1,5 @@
+@use 'styles/colors';
+
 .root {
 	display: flex;
 	flex-direction: column;
@@ -9,7 +11,7 @@
 	transition: background 0.3s;
 
 	&[aria-selected='true'] {
-		background: #a858eb;
+		background: colors.$purple;
 	}
 }
 

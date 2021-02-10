@@ -5,11 +5,14 @@ import useSWR from 'swr'
 
 import { PenData, penFromData } from 'models/Pen'
 import fetch from 'lib/fetch'
+import palState from 'state/pal'
 import pensState from 'state/pens'
 
 const usePens = () => {
+	const pal = useRecoilValue(palState)
 	const initialPens = useRecoilValue(pensState)
-	const { data, error } = useSWR<PenData[], unknown>('pens', fetch)
+
+	const { data, error } = useSWR<PenData[], unknown>(pal && 'pens', fetch)
 
 	const pens = useMemo(
 		() =>
@@ -26,7 +29,7 @@ const usePens = () => {
 			)
 	}, [error])
 
-	return pens ?? initialPens
+	return pal ? pens ?? initialPens : []
 }
 
 export default usePens

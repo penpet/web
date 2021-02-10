@@ -1,0 +1,46 @@
+@use 'styles/z-index';
+
+.root {
+	position: relative;
+}
+
+.trigger {
+	width: 100%;
+	height: 100%;
+}
+
+.container {
+	&::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: transparentize(black, 0.5);
+		z-index: z-index.$dropdown;
+		transition: opacity 0.15s;
+	}
+
+	&[aria-hidden='true'] {
+		&::before {
+			pointer-events: none;
+			opacity: 0;
+		}
+
+		.content {
+			pointer-events: none;
+			opacity: 0;
+			transform: translateX(-20px);
+		}
+	}
+}
+
+.content {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 8px;
+	z-index: z-index.$dropdown;
+	transition: opacity 0.15s, transform 0.15s;
+}

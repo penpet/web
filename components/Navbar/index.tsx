@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useRecoilValue } from 'recoil'
 
 import palState from 'state/pal'
+import ProfileDropdown from './ProfileDropdown'
 import LogInModal from 'components/Modal/LogIn'
 import SignUpModal from 'components/Modal/SignUp'
 
@@ -25,7 +26,7 @@ const Navbar = () => {
 		<nav className={styles.root}>
 			<h1 className={styles.title}>penpet</h1>
 			{pal ? (
-				pal.name
+				<ProfileDropdown pal={pal} />
 			) : (
 				<>
 					<button className={styles.logIn} onClick={showLogInModal}>
