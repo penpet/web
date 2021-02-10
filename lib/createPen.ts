@@ -1,11 +1,6 @@
-import Pen from 'models/Pen'
-import { ORIGIN } from './constants'
+import { PenData } from 'models/Pen'
+import fetch from 'lib/fetch'
 
-const createPen = async (): Promise<Pen> => {
-	const response = await fetch(`${ORIGIN}/pens`, { method: 'POST' })
-
-	if (response.ok) return response.json()
-	throw new Error(await response.text())
-}
+const createPen = () => fetch<PenData>('pens', { method: 'POST' })
 
 export default createPen

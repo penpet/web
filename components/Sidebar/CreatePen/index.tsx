@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState, useCallback } from 'react'
+import { mutate } from 'swr'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
+import { PenData } from 'models/Pen'
 import createPen from 'lib/createPen'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
-import { SOCKET_ORIGIN } from 'lib/constants'
 
 const SidebarCreatePen = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -15,7 +16,9 @@ const SidebarCreatePen = () => {
 	const onCreatePen = useCallback(async () => {
 		try {
 			setIsLoading(true)
-			await createPen()
+
+			const pen = await createPen()
+			mutate('pens', (pens: PenData[]) => [pen, ...pens])
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : 'An unknown error occurred'
@@ -24,20 +27,6 @@ const SidebarCreatePen = () => {
 			setIsLoading(false)
 		}
 	}, [setIsLoading])
-
-	useEffect(() => {
-		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens`)
-
-		socket.addEventListener('message', ({ data }) => {
-			console.log('DATA:', data)
-		})
-
-		socket.addEventListener('error', () => {
-			toast.error('An unknown error occurred')
-		})
-
-		return () => socket.close()
-	}, [])
 
 	return (
 		<div className={styles.root}>
