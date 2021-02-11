@@ -24,9 +24,11 @@ app.use((req, res) => nextRequestHandler(req, res))
 const start = async () => {
 	await Promise.all([database.connect(), nextApp.prepare()])
 
-	app.listen(PORT, () => {
-		console.log(`Listening on http://localhost:${PORT}`)
+	await new Promise<void>(resolve => {
+		app.listen(PORT, resolve)
 	})
+
+	console.log(`Listening on http://localhost:${PORT}`)
 }
 
 start()

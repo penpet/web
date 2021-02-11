@@ -1,10 +1,11 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import ShareDB from 'sharedb/lib/client'
+import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
-import Quill from 'quill'
+import Quill, { TextChangeHandler } from 'quill'
 
 import { SOCKET_ORIGIN } from 'lib/constants'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
@@ -15,6 +16,8 @@ export interface EditorContentProps {
 }
 
 const EditorContent = ({ penId }: EditorContentProps) => {
+	const [isLoading, setIsLoading] = useState(true)
+
 	const toolbarRef = useRef<HTMLDivElement | null>(null)
 	const contentRef = useRef<HTMLDivElement | null>(null)
 
@@ -24,38 +27,54 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 
 		if (!(penId && toolbar && content)) return
 
-		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${penId}`)
-		const connection = new ShareDB.Connection(socket as any)
+		setIsLoading(true)
 
-		const doc = connection.get('pens', penId)
+		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${penId}`)
+		const connection = new ShareDB.Connection(socket as never)
+
+		let doc: Doc | null = connection.get('pens', penId)
+		let quill: Quill | null = null
+
+		const onTextChange: TextChangeHandler = (delta, _oldDelta, source) => {
+			if (!doc || source !== 'user') return
+			doc.submitOp(delta, { source: quill })
+		}
+
+		const onOperation = (operation: unknown, source: unknown) => {
+			if (!quill || source === quill) return
+			quill.updateContents(operation as never)
+		}
 
 		doc.subscribe(error => {
 			if (error) return toast.error(error.message)
+			if (!doc) return
 
-			const quill = new Quill(content, {
+			quill = new Quill(content, {
 				theme: 'snow',
 				modules: { toolbar }
 			})
 
 			quill.setContents(doc.data)
 
-			quill.on('text-change', (delta, _oldDelta, source) => {
-				if (source !== 'user') return
-				doc.submitOp(delta, { source: quill })
-			})
+			quill.on('text-change', onTextChange)
+			doc.on('op', onOperation)
 
-			doc.on('op', (op, source) => {
-				if (source === quill) return
-				quill.updateContents(op as any)
-			})
+			setIsLoading(false)
 		})
 
-		return () => connection.close()
-	}, [penId, toolbarRef, contentRef])
+		return () => {
+			connection.close()
+
+			doc?.off('op', onOperation)
+			quill?.off('text-change', onTextChange)
+
+			doc = quill = null
+		}
+	}, [penId, toolbarRef, contentRef, setIsLoading])
 
 	return (
-		<div className={styles.root}>
-			<div ref={toolbarRef}>
+		<div key={penId} className={styles.root} aria-busy={isLoading}>
+			<div className={styles.toolbar} ref={toolbarRef}>
 				<span className="ql-formats">
 					<select className="ql-size" />
 				</span>
@@ -77,6 +96,7 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 					<button className="ql-header" value="1" />
 					<button className="ql-header" value="2" />
 					<button className="ql-blockquote" />
+					<button className="ql-code" />
 					<button className="ql-code-block" />
 				</span>
 				<span className="ql-formats">
@@ -99,7 +119,8 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 					<button className="ql-clean" />
 				</span>
 			</div>
-			<div ref={contentRef} />
+			<div className={styles.content} ref={contentRef} />
+			{isLoading && <Spinner className={styles.spinner} />}
 		</div>
 	)
 }

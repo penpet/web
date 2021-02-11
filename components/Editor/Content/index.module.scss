@@ -1,9 +1,58 @@
 @use 'styles/colors';
+@use 'styles/z-index';
+@use 'styles/spinner';
 
 $selected: colors.$pink;
 
+.root {
+	display: grid;
+	grid: auto 1fr / 1fr;
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+
+	&[aria-busy='true'] {
+		grid: 1fr / 1fr;
+
+		.toolbar,
+		.content {
+			display: none !important;
+		}
+	}
+}
+
+.toolbar:not(:global(.ql-toolbar)) {
+	display: none !important;
+}
+
+.content {
+	overflow-y: auto !important;
+}
+
+.spinner {
+	@include spinner.options(20px, 3px, white);
+
+	justify-self: center;
+	align-self: center;
+}
+
 .root :global {
 	@import 'quill/dist/quill.snow';
+
+	.ql-editor {
+		font-size: 16px !important;
+		color: white !important;
+
+		blockquote {
+			border-left: 4px solid transparentize(white, 0.7) !important;
+		}
+
+		code {
+			color: colors.$orange !important;
+			background: transparentize(white, 0.9) !important;
+			border: 1px solid colors.$border !important;
+		}
+	}
 
 	.ql-picker,
 	.ql-formats > button {
@@ -37,15 +86,29 @@ $selected: colors.$pink;
 	}
 
 	.ql-picker-options {
+		display: block !important;
 		margin-top: 4px !important;
 		background: colors.$background !important;
 		border: 1px solid colors.$border !important;
 		border-radius: 8px !important;
+		z-index: z-index.$dropdown !important;
+		transition: opacity 0.15s, transform 0.15s !important;
 
 		> span {
 			color: white !important;
 			transition: color 0.3s !important;
 		}
+
+		&[aria-hidden='true'] {
+			pointer-events: none !important;
+			opacity: 0 !important;
+			transform: translateX(-8px) !important;
+		}
+	}
+
+	.ql-picker-options,
+	.ql-tooltip {
+		box-shadow: 0 2px 8px transparentize(black, 0.8) !important;
 	}
 
 	.ql-selected,
@@ -60,5 +123,78 @@ $selected: colors.$pink;
 		.ql-stroke {
 			stroke: $selected !important;
 		}
+	}
+
+	.ql-tooltip {
+		display: flex !important;
+		align-items: center !important;
+		left: 16px !important;
+		margin-top: 8px !important;
+		background: colors.$background !important;
+		border: 1px solid colors.$border !important;
+		border-radius: 8px !important;
+		z-index: z-index.$dropdown !important;
+		transform: none !important;
+		transition: opacity 0.15s, transform 0.15s !important;
+
+		&.ql-hidden {
+			pointer-events: none !important;
+			opacity: 0 !important;
+			transform: translateX(-8px) !important;
+		}
+
+		&::before {
+			color: white !important;
+		}
+
+		input {
+			padding: 0 8px !important;
+			color: white !important;
+			background: transparentize(white, 0.9) !important;
+			border: none !important;
+			border-radius: 8px !important;
+			transition: background 0.3s !important;
+
+			&::placeholder {
+				color: transparent !important;
+			}
+
+			&:hover,
+			&:focus {
+				background: transparentize(white, 0.8) !important;
+			}
+		}
+
+		.ql-preview {
+			color: colors.$blue !important;
+		}
+
+		.ql-preview,
+		.ql-action,
+		.ql-remove {
+			&:hover {
+				text-decoration: underline !important;
+			}
+		}
+
+		.ql-action {
+			color: colors.$green !important;
+
+			&::after {
+				border: none !important;
+			}
+		}
+
+		.ql-remove {
+			color: colors.$red !important;
+		}
+	}
+
+	.ql-syntax {
+		padding: 8px 12px !important;
+		color: white !important;
+		background: transparentize(white, 0.9) !important;
+		border: 1px solid colors.$border;
+		border-radius: 8px !important;
 	}
 }
