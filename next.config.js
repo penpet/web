@@ -24,13 +24,17 @@ const config = {
 					value: getCSP({
 						directives: {
 							'default-src': [SELF],
+							'connect-src': [
+								SELF,
+								`https://s3.amazonaws.com/${process.env.AWS_S3_BUCKET}/`
+							],
 							'style-src': [SELF, INLINE],
 							'script-src': [
 								SELF,
 								...(DEV ? [EVAL] : []),
 								"'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='" // Render-blocking script
 							],
-							'img-src': [SELF, DATA],
+							'img-src': [SELF, DATA, 'https://u.pen.pet'],
 							'base-uri': SELF,
 							'block-all-mixed-content': true,
 							'upgrade-insecure-requests': true

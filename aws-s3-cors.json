@@ -1,0 +1,8 @@
+[
+	{
+		"AllowedHeaders": ["*"],
+		"AllowedMethods": ["GET", "PUT"],
+		"AllowedOrigins": ["https://pen.pet", "http://localhost:5000"],
+		"ExposeHeaders": ["Access-Control-Allow-Origin"]
+	}
+]

@@ -38,10 +38,16 @@ $selected: colors.$pink;
 
 .root :global {
 	@import 'quill/dist/quill.snow';
+	@import 'quill-image-uploader/src';
 
 	.ql-editor {
 		font-size: 16px !important;
 		color: white !important;
+
+		&::before {
+			font-style: normal !important;
+			color: transparentize(white, 0.5) !important;
+		}
 
 		blockquote {
 			border-left: 4px solid transparentize(white, 0.7) !important;

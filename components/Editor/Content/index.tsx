@@ -3,15 +3,16 @@ import { toast } from 'react-toastify'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
 import Quill, { TextChangeHandler } from 'quill'
-import { ImageDrop } from 'quill-image-drop-module'
+import ImageUploader from 'quill-image-uploader'
 
+import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
 ShareDB.types.register(richText.type)
-Quill.register('modules/imageDrop', ImageDrop)
+Quill.register('modules/imageUploader', ImageUploader)
 
 export interface EditorContentProps {
 	penId: string | undefined
@@ -53,7 +54,11 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 
 			quill = new Quill(content, {
 				theme: 'snow',
-				modules: { toolbar, imageDrop: true }
+				placeholder: 'Write anything!',
+				modules: {
+					toolbar,
+					imageUploader: { upload }
+				}
 			})
 
 			quill.setContents(doc.data)
