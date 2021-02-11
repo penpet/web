@@ -1,7 +1,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const { getCSP, SELF, INLINE, EVAL } = require('csp-header')
+const { getCSP, SELF, INLINE, EVAL, DATA } = require('csp-header')
 
 const DEV = process.env.NODE_ENV === 'development'
 
@@ -30,6 +30,7 @@ const config = {
 								...(DEV ? [EVAL] : []),
 								"'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='" // Render-blocking script
 							],
+							'img-src': [SELF, DATA],
 							'base-uri': SELF,
 							'block-all-mixed-content': true,
 							'upgrade-insecure-requests': true
