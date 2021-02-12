@@ -1,9 +1,9 @@
 import WebSocket from 'ws'
 import ShareDB from 'sharedb'
-import Adapter, { COLLECTION } from './Adapter'
 import JSONStream from '@teamwork/websocket-json-stream'
 import richText from 'rich-text'
 
+import Adapter, { COLLECTION } from './Adapter'
 import { options as databaseOptions } from '../database'
 
 ShareDB.types.register(richText.type)
