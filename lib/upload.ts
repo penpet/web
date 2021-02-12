@@ -9,6 +9,9 @@ interface SignedUrl {
 
 const upload = async (file: File) => {
 	try {
+		if (!file.type.startsWith('image/'))
+			throw new Error('You must upload an image')
+
 		const { url, destination } = await localFetch<SignedUrl>(
 			`signed?name=${encodeURIComponent(file.name)}`,
 			{

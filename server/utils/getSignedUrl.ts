@@ -20,7 +20,10 @@ export interface SignedUrl {
 const getSignedUrl = (pal: Pal, name: string, type: string) =>
 	new Promise<SignedUrl>((resolve, reject) => {
 		const extension = getExtension(type)
+
 		if (!extension) return reject(new HttpError(400, 'Invalid type'))
+		if (!type.startsWith('image/'))
+			return reject(new HttpError(400, 'You must upload an image'))
 
 		const id = `${newId()}.${extension}`
 

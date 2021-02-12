@@ -5,6 +5,7 @@ import { getPens, createPen } from '../models/Pen'
 import edit from '../models/Editor'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
+import pool from '../database'
 
 const router = Router()
 
@@ -15,7 +16,13 @@ router.options('/pens', (_req, res, next) => {
 
 router.get('/pens', assertAuthenticated, async ({ user }, res) => {
 	try {
-		res.send(await getPens(user as Pal))
+		const client = await pool.connect()
+
+		try {
+			res.send(await getPens(client, user as Pal))
+		} finally {
+			client.release()
+		}
 	} catch (error) {
 		console.error(error)
 		sendError(res, error, 401)
@@ -35,7 +42,13 @@ router.ws('/pens/:id', async (socket, req) => {
 
 router.post('/pens', assertAuthenticated, async ({ user }, res) => {
 	try {
-		res.send(await createPen(user as Pal))
+		const client = await pool.connect()
+
+		try {
+			res.send(await createPen(client, user as Pal))
+		} finally {
+			client.release()
+		}
 	} catch (error) {
 		console.error(error)
 		sendError(res, error, 401)

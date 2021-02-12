@@ -12,7 +12,6 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	font-family: OperatorMono, monospace;
 	border: none;
 	outline: none;
 }
@@ -27,6 +26,20 @@ body {
 	overflow: hidden;
 }
 
+body,
+::before,
+::after {
+	font-family: OperatorMono, monospace;
+}
+
+pre,
+code,
+input,
+textarea,
+button {
+	font-family: inherit;
+}
+
 button {
 	cursor: pointer;
 
@@ -36,6 +49,7 @@ button {
 }
 
 .Toastify__toast {
+	font-family: inherit;
 	font-weight: bold;
 	padding-left: 16px;
 	border-radius: 5px;

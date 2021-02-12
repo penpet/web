@@ -4,6 +4,7 @@ import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
 import Quill, { TextChangeHandler } from 'quill'
 import ImageUploader from 'quill-image-uploader'
+import katex from 'katex'
 
 import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
@@ -25,6 +26,9 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 	const contentRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
+		if (!('katex' in window))
+			((window as unknown) as Record<string, unknown>).katex = katex
+
 		const toolbar = toolbarRef.current
 		const content = contentRef.current
 

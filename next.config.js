@@ -34,7 +34,13 @@ const config = {
 								...(DEV ? [EVAL] : []),
 								"'sha256-Nqnn8clbgv+5l0PgxcTOldg8mkMKrFn4TvPL+rYUUGg='" // Render-blocking script
 							],
-							'img-src': [SELF, DATA, 'https://u.pen.pet'],
+							'img-src': [
+								SELF,
+								DATA,
+								'https://u.pen.pet',
+								'https://i.ytimg.com'
+							],
+							'frame-src': [SELF, 'https://www.youtube.com'],
 							'base-uri': SELF,
 							'block-all-mixed-content': true,
 							'upgrade-insecure-requests': true

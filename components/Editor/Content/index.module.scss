@@ -27,6 +27,7 @@ $selected: colors.$pink;
 
 .content {
 	overflow-y: auto !important;
+	font-family: inherit !important;
 }
 
 .spinner {
@@ -39,6 +40,8 @@ $selected: colors.$pink;
 .root :global {
 	@import 'quill/dist/quill.snow';
 	@import 'quill-image-uploader/src';
+
+	@import 'katex/dist/katex';
 
 	.ql-editor {
 		font-size: 16px !important;
@@ -54,7 +57,7 @@ $selected: colors.$pink;
 		}
 
 		code {
-			color: colors.$orange !important;
+			color: white !important;
 			background: transparentize(white, 0.9) !important;
 			border: 1px solid colors.$border !important;
 		}

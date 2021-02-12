@@ -3,7 +3,6 @@ import Role from './Role'
 export interface PenData {
 	id: string
 	name: string
-	body: string
 	created: string
 	updated: string
 	role: Role

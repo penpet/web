@@ -12,7 +12,6 @@ const app = express()
 ws(app)
 
 import routes from './routes'
-import database from './database'
 import { DEV, ROOT, PORT } from './constants'
 
 const nextApp = next({ dev: DEV, dir: ROOT })
@@ -28,7 +27,7 @@ app.use(routes)
 app.use((req, res) => nextRequestHandler(req, res))
 
 const start = async () => {
-	await Promise.all([database.connect(), nextApp.prepare()])
+	await nextApp.prepare()
 
 	await new Promise<void>(resolve => {
 		app.listen(PORT, resolve)

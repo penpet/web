@@ -1,8 +1,8 @@
+import { PoolClient } from 'pg'
 import { compare, hash } from 'bcrypt'
 
 import HttpError from '../utils/HttpError'
 import newId from '../utils/newId'
-import database from '../database'
 
 const SALT_ROUNDS = 10
 
@@ -22,6 +22,7 @@ export const palToPublic = ({ id, name, email }: Pal): PublicPal => ({
 })
 
 export const createPal = async (
+	client: PoolClient,
 	name: string,
 	email: string,
 	password: string
@@ -33,7 +34,7 @@ export const createPal = async (
 		password: await hash(password, SALT_ROUNDS)
 	}
 
-	await database.query<Pal, [string, string, string, string]>(
+	await client.query<Pal, [string, string, string, string]>(
 		'INSERT INTO pals (id, name, email, password) VALUES ($1, $2, $3, $4)',
 		[pal.id, pal.name, pal.email, pal.password]
 	)
@@ -41,8 +42,12 @@ export const createPal = async (
 	return pal
 }
 
-export const palFromCredential = async (email: string, password: string) => {
-	const { rows: pals } = await database.query<Pal, [string]>(
+export const palFromCredential = async (
+	client: PoolClient,
+	email: string,
+	password: string
+) => {
+	const { rows: pals } = await client.query<Pal, [string]>(
 		'SELECT id, name, email, password FROM pals WHERE email = $1',
 		[email]
 	)
@@ -55,8 +60,8 @@ export const palFromCredential = async (email: string, password: string) => {
 	throw new HttpError(401, 'Incorrect password')
 }
 
-export const palFromId = async (id: string) => {
-	const { rows: pals } = await database.query<Pal, [string]>(
+export const palFromId = async (client: PoolClient, id: string) => {
+	const { rows: pals } = await client.query<Pal, [string]>(
 		'SELECT id, name, email, password FROM pals WHERE id = $1',
 		[id]
 	)
