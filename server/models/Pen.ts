@@ -25,6 +25,18 @@ export const getPens = async (client: PoolClient, pal: Pal) => {
 	return pens
 }
 
+export const getPen = async (client: PoolClient, id: string) => {
+	const { rows: pens } = await client.query<PenData, [string]>(
+		'SELECT id, name, created, updated FROM pens WHERE id = $1',
+		[id]
+	)
+
+	const pen = pens[0]
+	if (pen) return pen
+
+	throw new HttpError(404, 'Pen not found')
+}
+
 export const createPen = async (client: PoolClient, pal: Pal) => {
 	const { rows: pens } = await client.query<PenData, [string, string]>(
 		'INSERT INTO pens (id, name) VALUES ($1, $2) RETURNING *',

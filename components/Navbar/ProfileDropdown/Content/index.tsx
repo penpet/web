@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react'
 import { useSetRecoilState } from 'recoil'
-import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { fetchVoid } from 'lib/fetch'
+import handleError from 'lib/handleError'
 import palState from 'state/pal'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
-import Spinner from 'components/Spinner'
 
 const ProfileDropdownContent = () => {
 	const setPal = useSetRecoilState(palState)
@@ -21,9 +21,7 @@ const ProfileDropdownContent = () => {
 
 			setPal(null)
 		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : 'An unknown error occurred'
-			)
+			handleError(error)
 		} finally {
 			setIsSignOutLoading(false)
 		}

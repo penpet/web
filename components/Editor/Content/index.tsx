@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
 import Quill, { TextChangeHandler } from 'quill'
@@ -8,6 +7,7 @@ import katex from 'katex'
 
 import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
+import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
@@ -53,7 +53,7 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 		}
 
 		doc.subscribe(error => {
-			if (error) return toast.error(error.message)
+			if (error) return handleError(error)
 			if (!doc) return
 
 			quill = new Quill(content, {

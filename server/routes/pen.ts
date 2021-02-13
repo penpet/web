@@ -1,11 +1,12 @@
 import { Router } from 'express'
 
 import Pal from '../models/Pal'
-import { getPens, createPen } from '../models/Pen'
+import { getPens, getPen, createPen } from '../models/Pen'
 import edit from '../models/Editor'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
 import pool from '../database'
+import HttpError from '../utils/HttpError'
 
 const router = Router()
 
@@ -24,8 +25,22 @@ router.get('/pens', assertAuthenticated, async ({ user }, res) => {
 			client.release()
 		}
 	} catch (error) {
-		console.error(error)
 		sendError(res, error, 401)
+	}
+})
+
+router.get('/pens/:id', async ({ params: { id } }, res) => {
+	try {
+		if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
+		const client = await pool.connect()
+
+		try {
+			res.send(await getPen(client, id))
+		} finally {
+			client.release()
+		}
+	} catch (error) {
+		sendError(res, error, 500)
 	}
 })
 
@@ -35,8 +50,8 @@ router.ws('/pens/:id', async (socket, req) => {
 		if (typeof id !== 'string' || req.isUnauthenticated()) return socket.close()
 
 		await edit(id, socket)
-	} catch (error) {
-		console.error(error)
+	} catch {
+		socket.close()
 	}
 })
 
@@ -50,7 +65,6 @@ router.post('/pens', assertAuthenticated, async ({ user }, res) => {
 			client.release()
 		}
 	} catch (error) {
-		console.error(error)
 		sendError(res, error, 401)
 	}
 })

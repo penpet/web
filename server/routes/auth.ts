@@ -45,7 +45,6 @@ router.post(
 
 			res.send(palToPublic(user))
 		} catch (error) {
-			console.error(error)
 			sendError(res, error, 401)
 		}
 	}
@@ -95,7 +94,6 @@ router.post(
 				client.release()
 			}
 		} catch (error) {
-			console.error(error)
 			sendError(res, error, 401)
 		}
 	}

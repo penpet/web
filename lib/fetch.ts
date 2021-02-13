@@ -1,10 +1,11 @@
+import HttpError from 'models/HttpError'
 import { ORIGIN } from './constants'
 
 const getResponse = async (url: string, init?: RequestInit) => {
 	const response = await globalThis.fetch(`${ORIGIN}/${url}`, init)
 	if (response.ok) return response
 
-	throw new Error(await response.text())
+	throw new HttpError(response.status, await response.text())
 }
 
 const fetch = async <Response = unknown>(url: string, init?: RequestInit) =>

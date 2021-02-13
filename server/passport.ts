@@ -15,7 +15,6 @@ passport.use(
 				client.release()
 			}
 		} catch (error) {
-			console.error(error)
 			done(error)
 		}
 	})
@@ -35,7 +34,6 @@ passport.deserializeUser(async (id: string, done) => {
 			client.release()
 		}
 	} catch (error) {
-		console.error(error)
 		done(error)
 	}
 })

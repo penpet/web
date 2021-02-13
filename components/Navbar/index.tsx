@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useRecoilValue } from 'recoil'
+import Link from 'next/link'
 
 import palState from 'state/pal'
 import ProfileDropdown from './ProfileDropdown'
@@ -24,7 +25,9 @@ const Navbar = () => {
 
 	return (
 		<nav className={styles.root}>
-			<h1 className={styles.title}>penpet</h1>
+			<Link href="/">
+				<a className={styles.title}>penpet</a>
+			</Link>
 			{pal ? (
 				<ProfileDropdown pal={pal} />
 			) : (

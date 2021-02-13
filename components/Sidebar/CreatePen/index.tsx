@@ -6,6 +6,7 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { PenData } from 'models/Pen'
 import createPen from 'lib/createPen'
+import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
@@ -20,9 +21,7 @@ const SidebarCreatePen = () => {
 			const pen = await createPen()
 			mutate('pens', (pens: PenData[]) => [pen, ...pens])
 		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : 'An unknown error occurred'
-			)
+			handleError(error)
 		} finally {
 			setIsLoading(false)
 		}

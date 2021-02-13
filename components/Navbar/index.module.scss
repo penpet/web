@@ -10,10 +10,17 @@
 }
 
 .title {
+	display: block;
 	margin-right: auto;
+	text-decoration: none;
+	font-size: 30px;
 	font-weight: 900;
 	color: white;
-	transform: translateY(-2px);
+	transform: translateY(-4px);
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .logIn,

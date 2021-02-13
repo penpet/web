@@ -1,6 +1,5 @@
-import { toast } from 'react-toastify'
-
 import localFetch from './fetch'
+import handleError from './handleError'
 
 interface SignedUrl {
 	url: string
@@ -28,9 +27,7 @@ const upload = async (file: File) => {
 
 		return destination
 	} catch (error) {
-		toast.error(
-			error instanceof Error ? error.message : 'An unknown error occurred'
-		)
+		handleError(error)
 		throw error
 	}
 }
