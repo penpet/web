@@ -7,7 +7,6 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import getInitialState from 'lib/getInitialState'
 import initializeState from 'state'
 import useProgress from 'hooks/useProgress'
-import Layout from 'components/Layout'
 
 import styles from 'components/App/index.module.scss'
 
@@ -40,9 +39,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 				<meta key="theme-color" name="theme-color" content={styles.theme} />
 			</Head>
 			<RecoilRoot initializeState={initializeState(pageProps)}>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
+				<Component {...pageProps} />
 				<ToastContainer />
 			</RecoilRoot>
 		</>

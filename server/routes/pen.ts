@@ -29,13 +29,13 @@ router.get('/pens', assertAuthenticated, async ({ user }, res) => {
 	}
 })
 
-router.get('/pens/:id', async ({ params: { id } }, res) => {
+router.get('/pens/:id', async ({ params: { id }, user }, res) => {
 	try {
 		if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
 		const client = await pool.connect()
 
 		try {
-			res.send(await getPen(client, id))
+			res.send(await getPen(client, user as Pal | undefined, id))
 		} finally {
 			client.release()
 		}

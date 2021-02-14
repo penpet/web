@@ -16,10 +16,10 @@ ShareDB.types.register(richText.type)
 Quill.register('modules/imageUploader', ImageUploader)
 
 export interface EditorContentProps {
-	penId: string | undefined
+	id: string
 }
 
-const EditorContent = ({ penId }: EditorContentProps) => {
+const EditorContent = ({ id }: EditorContentProps) => {
 	const [isLoading, setIsLoading] = useState(true)
 
 	const toolbarRef = useRef<HTMLDivElement | null>(null)
@@ -32,14 +32,14 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 		const toolbar = toolbarRef.current
 		const content = contentRef.current
 
-		if (!(penId && toolbar && content)) return
+		if (!(id && toolbar && content)) return
 
 		setIsLoading(true)
 
-		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${penId}`)
+		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${id}`)
 		const connection = new ShareDB.Connection(socket as never)
 
-		let doc: Doc | null = connection.get('pens', penId)
+		let doc: Doc | null = connection.get('pens', id)
 		let quill: Quill | null = null
 
 		const onTextChange: TextChangeHandler = (delta, _oldDelta, source) => {
@@ -81,10 +81,10 @@ const EditorContent = ({ penId }: EditorContentProps) => {
 
 			doc = quill = null
 		}
-	}, [penId, toolbarRef, contentRef, setIsLoading])
+	}, [id, toolbarRef, contentRef, setIsLoading])
 
 	return (
-		<div key={penId} className={styles.root} aria-busy={isLoading}>
+		<div key={id} className={styles.root} aria-busy={isLoading}>
 			<div className={styles.toolbar} ref={toolbarRef}>
 				<span className="ql-formats">
 					<select className="ql-size" />

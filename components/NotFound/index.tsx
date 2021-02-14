@@ -1,9 +1,12 @@
 import { NextPage } from 'next'
 
-import ErrorPage from 'components/Error'
+import Layout from 'components/Layout'
+import ErrorMessage from 'components/Error'
 
 const NotFound: NextPage = () => (
-	<ErrorPage message="There's nothing at this URL" />
+	<Layout>
+		<ErrorMessage>There's nothing at this URL</ErrorMessage>
+	</Layout>
 )
 
 export default NotFound

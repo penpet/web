@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { ReactNode, useState, useCallback } from 'react'
 import { useRecoilValue } from 'recoil'
 import Link from 'next/link'
 
@@ -9,7 +9,11 @@ import SignUpModal from 'components/Modal/SignUp'
 
 import styles from './index.module.scss'
 
-const Navbar = () => {
+export interface NavbarProps {
+	items?: ReactNode
+}
+
+const Navbar = ({ items }: NavbarProps) => {
 	const pal = useRecoilValue(palState)
 
 	const [isLogInModalShowing, setIsLogInModalShowing] = useState(false)
@@ -28,6 +32,7 @@ const Navbar = () => {
 			<Link href="/">
 				<a className={styles.title}>penpet</a>
 			</Link>
+			<div className={styles.items}>{items}</div>
 			{pal ? (
 				<ProfileDropdown pal={pal} />
 			) : (

@@ -1,17 +1,18 @@
 import { ReactNode } from 'react'
 
-import Navbar from 'components/Navbar'
-import Sidebar from 'components/Sidebar'
+import Navbar from './Navbar'
+import Sidebar from './Sidebar'
 
 import styles from './index.module.scss'
 
 export interface LayoutProps {
+	navbar?: ReactNode
 	children?: ReactNode
 }
 
-const Layout = ({ children }: LayoutProps) => (
+const Layout = ({ navbar, children }: LayoutProps) => (
 	<div className={styles.root}>
-		<Navbar />
+		<Navbar items={navbar} />
 		<Sidebar />
 		<main className={styles.main}>{children}</main>
 	</div>

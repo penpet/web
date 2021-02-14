@@ -1,14 +1,16 @@
+import { ReactNode } from 'react'
+
 import styles from './index.module.scss'
 
-export interface ErrorPageProps {
-	message: string
+export interface ErrorMessageProps {
+	children?: ReactNode
 }
 
-const ErrorPage = ({ message }: ErrorPageProps) => (
+const ErrorMessage = ({ children }: ErrorMessageProps) => (
 	<div className={styles.root}>
 		<h3 className={styles.title}>Uh oh!</h3>
-		<p className={styles.message}>{message}</p>
+		<p className={styles.message}>{children}</p>
 	</div>
 )
 
-export default ErrorPage
+export default ErrorMessage

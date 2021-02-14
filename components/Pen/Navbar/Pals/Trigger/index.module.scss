@@ -1,0 +1,20 @@
+@use 'styles/colors';
+
+.root {
+	display: flex;
+	align-items: center;
+	padding: 8px 12px;
+	font-size: 16px;
+	color: white;
+	background: colors.$pink;
+	border-radius: 8px;
+	transition: background 0.3s;
+
+	&:hover {
+		background: transparentize(white, 0.8);
+	}
+}
+
+.icon {
+	margin-right: 8px;
+}

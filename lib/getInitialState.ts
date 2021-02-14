@@ -7,11 +7,15 @@ import { InitialState } from 'state'
 const getInitialState = async (
 	context: NextPageContext
 ): Promise<InitialState> => {
-	const pal = await getPal(context)
+	try {
+		const pal = await getPal(context)
 
-	return {
-		pal,
-		pens: pal ? await getPens(context) : []
+		return {
+			pal,
+			pens: pal ? await getPens(context) : []
+		}
+	} catch {
+		return { pal: null, pens: [] }
 	}
 }
 
