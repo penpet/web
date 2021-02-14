@@ -26,6 +26,25 @@ export const getPens = async (client: PoolClient, pal: Pal) => {
 	return pens
 }
 
+export const canViewPen = async (
+	client: PoolClient,
+	pal: Pal | undefined,
+	id: string
+) => {
+	const { rows: pens } = await client.query<
+		{ public: boolean; role: Role | null | undefined },
+		[string, string] | [string]
+	>(
+		pal
+			? 'SELECT pens.public, roles.role FROM pens LEFT JOIN roles ON roles.pal_id = $1 AND roles.pen_id = $2 WHERE pens.id = $2'
+			: 'SELECT public FROM pens WHERE id = $1',
+		pal ? [pal.id, id] : [id]
+	)
+
+	const pen = pens[0]
+	return Boolean(pen && (pen.public || pen.role))
+}
+
 export const getPen = async (
 	client: PoolClient,
 	pal: Pal | undefined,
@@ -44,7 +63,7 @@ export const getPen = async (
 	const pen = pens[0]
 
 	if (!pen) throw new HttpError(404, 'Pen not found')
-	if (!(pen.role || pen.public)) throw new HttpError(401, 'Private pen')
+	if (!(pen.public || pen.role)) throw new HttpError(401, 'Private pen')
 
 	return { ...pen, role: pen.role ?? Role.Viewer }
 }
