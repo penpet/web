@@ -5,10 +5,11 @@ import styles from './index.module.scss'
 
 export interface PenPagePalsContentProps {
 	pen: Pen
+	isShowing: boolean
 }
 
-const PenPagePalsContent = ({ pen }: PenPagePalsContentProps) => {
-	const pals = usePals(pen.id)
+const PenPagePalsContent = ({ pen, isShowing }: PenPagePalsContentProps) => {
+	const pals = usePals(pen.id, isShowing)
 
 	return (
 		<>

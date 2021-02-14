@@ -23,7 +23,7 @@ const PenPagePals = ({ pen }: PenPagePalsProps) => {
 			isShowing={isShowing}
 			setIsShowing={setIsShowing}
 		>
-			<Content pen={pen} />
+			<Content pen={pen} isShowing={isShowing} />
 		</Dropdown>
 	)
 }
