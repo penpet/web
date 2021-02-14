@@ -1,5 +1,5 @@
 import Pen from 'models/Pen'
-import Pals from './Pals'
+import Pals from '../Pals'
 
 import styles from './index.module.scss'
 
