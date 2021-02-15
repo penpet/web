@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
 import Quill, { TextChangeHandler } from 'quill'
-import ImageUploader from 'quill-image-uploader'
+import ImageUploader from 'quill-upload-image'
 import katex from 'katex'
 
 import upload from 'lib/upload'
