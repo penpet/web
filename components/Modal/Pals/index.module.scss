@@ -1,0 +1,52 @@
+@use 'styles/colors';
+@use 'styles/spinner';
+
+.root {
+	max-width: 95%;
+	width: 600px;
+	overflow: hidden;
+	background: colors.$background;
+	border: 1px solid colors.$border;
+	border-radius: 8px;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	background: transparentize(black, 0.7);
+}
+
+.hide {
+	display: flex;
+	overflow: hidden;
+	font-size: 26px;
+	color: colors.$pink;
+	background: white;
+	box-shadow: 0 0 10px 0 colors.$pink;
+	border-radius: 50%;
+	transition: opacity 0.3s;
+
+	&:hover {
+		opacity: 0.7;
+	}
+}
+
+.title {
+	font-size: 30px;
+	font-weight: 900;
+	color: white;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	min-height: 200px;
+}
+
+.spinner {
+	@include spinner.options(20px, 3px, white);
+
+	margin: auto;
+}

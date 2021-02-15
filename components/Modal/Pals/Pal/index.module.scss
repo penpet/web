@@ -1,0 +1,36 @@
+@use 'styles/colors';
+
+$role-border-radius: 4px;
+
+.root {
+	display: flex;
+}
+
+.name {
+}
+
+.editor,
+.viewer {
+	color: white;
+	background: transparentize(white, 0.9);
+	transition: background 0.3s;
+
+	&[aria-selected='true'] {
+		background: colors.$pink;
+	}
+
+	&:hover {
+		background: transparentize(white, 0.8);
+	}
+}
+
+.editor {
+	border-radius: $role-border-radius 0 0 $role-border-radius;
+}
+
+.viewer {
+	border-radius: 0 $role-border-radius $role-border-radius 0;
+}
+
+.delete {
+}

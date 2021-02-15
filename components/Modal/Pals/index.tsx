@@ -1,7 +1,11 @@
+import { useCallback } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+
 import Pen from 'models/Pen'
 import usePals from 'hooks/usePals'
 import Row from './Pal'
-import { ModalProps } from '..'
+import Modal, { ModalProps } from '..'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
@@ -10,17 +14,33 @@ export interface PalsModalProps extends ModalProps {
 	pen: Pen
 }
 
-const PalsModal = ({ pen, isShowing }: PalsModalProps) => {
+const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 	const pals = usePals(pen.id, isShowing)
 
+	const hide = useCallback(() => {
+		setIsShowing(false)
+	}, [setIsShowing])
+
 	return (
-		<>
-			{/* {pals ? (
-				pals.map(pal => <Row key={pal.id} pal={pal} pen={pen} />)
-			) : (
-				<Spinner className={styles.spinner} />
-			)} */}
-		</>
+		<Modal
+			className={styles.root}
+			isShowing={isShowing}
+			setIsShowing={setIsShowing}
+		>
+			<header className={styles.header}>
+				<h3 className={styles.title}>my pals</h3>
+				<button className={styles.hide} onClick={hide}>
+					<FontAwesomeIcon icon={faTimesCircle} />
+				</button>
+			</header>
+			<div className={styles.content}>
+				{pals ? (
+					pals.map(pal => <Row key={pal.id} pal={pal} pen={pen} />)
+				) : (
+					<Spinner className={styles.spinner} />
+				)}
+			</div>
+		</Modal>
 	)
 }
 
