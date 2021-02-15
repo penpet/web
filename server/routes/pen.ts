@@ -47,9 +47,19 @@ router.get('/pens/:id', async ({ params: { id }, user }, res) => {
 router.ws('/pens/:id', async (socket, req) => {
 	try {
 		const { id } = req.params
-		if (typeof id !== 'string' || req.isUnauthenticated()) return socket.close()
+
+		if (typeof id !== 'string' || req.isUnauthenticated())
+			throw new Error('Bad request')
 
 		await edit(id, socket)
+
+		const ping = setInterval(() => {
+			socket.ping()
+		}, 5000)
+
+		socket.on('close', () => {
+			clearInterval(ping)
+		})
 	} catch {
 		socket.close()
 	}
