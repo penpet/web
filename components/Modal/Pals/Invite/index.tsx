@@ -9,6 +9,7 @@ import {
 
 import Pen from 'models/Pen'
 import Role from 'models/Role'
+import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
@@ -24,9 +25,20 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const isDisabled = !email || isLoading
 
-	const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-	}, [])
+	const onSubmit = useCallback(
+		async (event: FormEvent<HTMLFormElement>) => {
+			event.preventDefault()
+
+			try {
+				setIsLoading(true)
+			} catch (error) {
+				handleError(error)
+			} finally {
+				setIsLoading(false)
+			}
+		},
+		[email, role, setIsLoading]
+	)
 
 	const onEmailChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {

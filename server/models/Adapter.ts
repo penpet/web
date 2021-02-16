@@ -38,10 +38,12 @@ export default class Adapter extends DB {
 			const client = await this.pool.connect()
 
 			try {
-				const {
-					rows: operations
-				} = await client.query(
-					'SELECT max(version) AS max_version FROM operations WHERE id = $1',
+				const { rows: operations } = await client.query(
+					`
+					SELECT max(version) AS max_version
+					FROM operations
+					WHERE id = $1
+					`,
 					[id]
 				)
 
@@ -52,14 +54,29 @@ export default class Adapter extends DB {
 					await client.query('BEGIN')
 
 					await client.query(
-						'INSERT INTO operations (id, version, operation) VALUES ($1, $2, $3)',
+						`
+						INSERT INTO operations (id, version, operation)
+						VALUES ($1, $2, $3)
+						`,
 						[id, snapshot.v, op]
 					)
 
 					await client.query(
 						snapshot.v === 1
-							? 'INSERT INTO snapshots (id, type, version, data) VALUES ($1, $2, $3, $4)'
-							: 'UPDATE snapshots SET type = $2, version = $3, data = $4 WHERE id = $1 AND version = ($3 - 1)',
+							? `
+							INSERT INTO snapshots (id, type, version, data)
+							VALUES ($1, $2, $3, $4)
+							`
+							: `
+							UPDATE snapshots
+							SET
+								type = $2,
+								version = $3,
+								data = $4
+							WHERE
+								id = $1 AND
+								version = ($3 - 1)
+							`,
 						[id, snapshot.type, snapshot.v, snapshot.data]
 					)
 
@@ -89,10 +106,12 @@ export default class Adapter extends DB {
 			const client = await this.pool.connect()
 
 			try {
-				const {
-					rows
-				} = await client.query(
-					'SELECT type, version, data FROM snapshots WHERE id = $1',
+				const { rows } = await client.query(
+					`
+					SELECT type, version, data
+					FROM snapshots
+					WHERE id = $1
+					`,
 					[id]
 				)
 
@@ -126,10 +145,15 @@ export default class Adapter extends DB {
 			const client = await this.pool.connect()
 
 			try {
-				const {
-					rows
-				} = await client.query(
-					'SELECT operation FROM operations WHERE id = $1 AND version >= $2 AND version < $3',
+				const { rows } = await client.query(
+					`
+					SELECT operation
+					FROM operations
+					WHERE
+						id = $1 AND
+						version >= $2 AND
+						version < $3
+					`,
 					[id, from, to]
 				)
 

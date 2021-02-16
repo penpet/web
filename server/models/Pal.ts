@@ -35,7 +35,10 @@ export const createPal = async (
 	}
 
 	await client.query<Pal, [string, string, string, string]>(
-		'INSERT INTO pals (id, name, email, password) VALUES ($1, $2, $3, $4)',
+		`
+		INSERT INTO pals (id, name, email, password)
+		VALUES ($1, $2, $3, $4)
+		`,
 		[pal.id, pal.name, pal.email, pal.password]
 	)
 
@@ -48,7 +51,11 @@ export const palFromCredential = async (
 	password: string
 ) => {
 	const { rows: pals } = await client.query<Pal, [string]>(
-		'SELECT id, name, email, password FROM pals WHERE email = $1',
+		`
+		SELECT id, name, email, password
+		FROM pals
+		WHERE email = $1
+		`,
 		[email]
 	)
 
@@ -62,7 +69,11 @@ export const palFromCredential = async (
 
 export const palFromId = async (client: PoolClient, id: string) => {
 	const { rows: pals } = await client.query<Pal, [string]>(
-		'SELECT id, name, email, password FROM pals WHERE id = $1',
+		`
+		SELECT id, name, email, password
+		FROM pals
+		WHERE id = $1
+		`,
 		[id]
 	)
 
