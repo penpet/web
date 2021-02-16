@@ -1,9 +1,9 @@
-import Role from './Role'
+import Role, { PublicRole } from './Role'
 
 export interface PenData {
 	id: string
 	name: string
-	public: boolean
+	publicRole: PublicRole | null
 	created: string
 	updated: string
 	role: Role

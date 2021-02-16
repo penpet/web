@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
 import { assertAuthenticated } from '../utils/assert'
@@ -10,6 +11,7 @@ const router = Router()
 
 router.get(
 	'/signed',
+	rateLimit({ windowMs: 15 * 60 * 1000, max: 60 }),
 	assertAuthenticated,
 	async ({ user, headers, query: { name } }, res) => {
 		try {

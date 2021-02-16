@@ -1,0 +1,94 @@
+@use 'styles/colors';
+@use 'styles/spinner';
+
+$height: 30px;
+
+.root {
+	display: flex;
+	position: relative;
+	align-items: stretch;
+	height: $height;
+	margin: 0 16px;
+}
+
+.email {
+	flex-grow: 1;
+	padding: 0 12px 0 34px;
+	font-size: 16px;
+	color: white;
+	background: transparentize(white, 0.9);
+	border-radius: 8px;
+	transition: background 0.3s;
+
+	&::placeholder {
+		color: transparentize(white, 0.5);
+	}
+
+	&:hover,
+	&:focus {
+		background: transparentize(white, 0.8);
+
+		+ .emailIcon {
+			opacity: 1;
+		}
+	}
+}
+
+.emailIcon {
+	position: absolute;
+	top: 7px;
+	left: 9px;
+	pointer-events: none;
+	color: white;
+	opacity: 0.7;
+	transition: opacity 0.3s;
+}
+
+.roles {
+	display: flex;
+	align-items: stretch;
+	overflow: hidden;
+	margin: 0 12px;
+	border-radius: 8px;
+}
+
+.viewer,
+.editor {
+	width: $height;
+	color: white;
+	background: transparentize(white, 0.9);
+	transition: background 0.3s;
+
+	&[aria-selected='true'] {
+		background: colors.$pink;
+	}
+
+	&[aria-selected='false']:hover {
+		background: transparentize(white, 0.8);
+	}
+}
+
+.submit {
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	color: white;
+	background: colors.$blue;
+	box-shadow: 0 0 10px 0 colors.$blue;
+	border-radius: 8px;
+	transition: background 0.3s, opacity 0.3s;
+
+	&:disabled {
+		opacity: 0.7;
+	}
+
+	&:not(:disabled):hover {
+		background: none;
+	}
+}
+
+.spinner {
+	@include spinner.options(14px, 3px, white);
+}

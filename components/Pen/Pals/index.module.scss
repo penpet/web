@@ -8,11 +8,12 @@
 	font-size: 16px;
 	color: white;
 	background: colors.$pink;
+	box-shadow: 0 0 10px 0 colors.$pink;
 	border-radius: 8px;
 	transition: background 0.3s;
 
 	&:hover {
-		background: transparentize(white, 0.8);
+		background: none;
 	}
 }
 

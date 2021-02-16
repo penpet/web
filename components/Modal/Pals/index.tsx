@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 import Pen from 'models/Pen'
+import Role from 'models/Role'
 import usePals from 'hooks/usePals'
+import Invite from './Invite'
 import Row from './Pal'
 import Modal, { ModalProps } from '..'
 import Spinner from 'components/Spinner'
@@ -16,6 +18,7 @@ export interface PalsModalProps extends ModalProps {
 
 const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 	const pals = usePals(pen.id, isShowing)
+	const isOwner = pen.role === Role.Owner
 
 	const hide = useCallback(() => {
 		setIsShowing(false)
@@ -35,7 +38,12 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 			</header>
 			<div className={styles.content}>
 				{pals ? (
-					pals.map(pal => <Row key={pal.id} pal={pal} pen={pen} />)
+					<>
+						{isOwner && <Invite pen={pen} />}
+						{pals.map(pal => (
+							<Row key={pal.id} pal={pal} pen={pen} />
+						))}
+					</>
 				) : (
 					<Spinner className={styles.spinner} />
 				)}

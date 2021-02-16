@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import bodyParser from 'body-parser'
 import passport from 'passport'
+import rateLimit from 'express-rate-limit'
 
 import Pal, { palToPublic, createPal } from '../models/Pal'
 import HttpError from '../utils/HttpError'
@@ -28,6 +29,7 @@ router.get('/auth', ({ user }, res) => {
 
 router.post(
 	'/auth/log-in',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
 	assertUnauthenticated,
 	bodyParser.json(),
 	async (req, res, next) => {
@@ -52,6 +54,7 @@ router.post(
 
 router.post(
 	'/auth/sign-up',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }),
 	assertUnauthenticated,
 	bodyParser.json(),
 	async (req, res) => {
@@ -99,9 +102,14 @@ router.post(
 	}
 )
 
-router.post('/auth/sign-out', assertAuthenticated, (req, res) => {
-	req.logOut()
-	res.send()
-})
+router.post(
+	'/auth/sign-out',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
+	assertAuthenticated,
+	(req, res) => {
+		req.logOut()
+		res.send()
+	}
+)
 
 export default router

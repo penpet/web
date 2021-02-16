@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
 import { getPens, getPen, createPen } from '../models/Pen'
@@ -15,34 +16,43 @@ router.options('/pens', (_req, res, next) => {
 	next()
 })
 
-router.get('/pens', assertAuthenticated, async ({ user }, res) => {
-	try {
-		const client = await pool.connect()
-
+router.get(
+	'/pens',
+	rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }),
+	assertAuthenticated,
+	async ({ user }, res) => {
 		try {
-			res.send(await getPens(client, user as Pal))
-		} finally {
-			client.release()
+			const client = await pool.connect()
+
+			try {
+				res.send(await getPens(client, user as Pal))
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 401)
 		}
-	} catch (error) {
-		sendError(res, error, 401)
 	}
-})
+)
 
-router.get('/pens/:id', async ({ params: { id }, user }, res) => {
-	try {
-		if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
-		const client = await pool.connect()
-
+router.get(
+	'/pens/:id',
+	rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }),
+	async ({ params: { id }, user }, res) => {
 		try {
-			res.send(await getPen(client, user as Pal | undefined, id))
-		} finally {
-			client.release()
+			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
+			const client = await pool.connect()
+
+			try {
+				res.send(await getPen(client, user as Pal | undefined, id))
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 500)
 		}
-	} catch (error) {
-		sendError(res, error, 500)
 	}
-})
+)
 
 router.ws('/pens/:id', async (socket, req) => {
 	try {
@@ -65,18 +75,23 @@ router.ws('/pens/:id', async (socket, req) => {
 	}
 })
 
-router.post('/pens', assertAuthenticated, async ({ user }, res) => {
-	try {
-		const client = await pool.connect()
-
+router.post(
+	'/pens',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
+	assertAuthenticated,
+	async ({ user }, res) => {
 		try {
-			res.send(await createPen(client, user as Pal))
-		} finally {
-			client.release()
+			const client = await pool.connect()
+
+			try {
+				res.send(await createPen(client, user as Pal))
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 401)
 		}
-	} catch (error) {
-		sendError(res, error, 401)
 	}
-})
+)
 
 export default router

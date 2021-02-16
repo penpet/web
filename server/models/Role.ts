@@ -2,6 +2,7 @@ import { PoolClient } from 'pg'
 
 import Pal from './Pal'
 import Pen from './Pen'
+import newId from '../utils/newId'
 
 enum Role {
 	Owner = 'owner',
@@ -9,10 +10,15 @@ enum Role {
 	Viewer = 'viewer'
 }
 
+export enum PublicRole {
+	Editor = 'editor',
+	Viewer = 'viewer'
+}
+
 export const createRole = async (client: PoolClient, pal: Pal, pen: Pen) => {
-	await client.query<Record<string, never>, [string, string, string]>(
-		'INSERT INTO roles (pal_id, pen_id, role) VALUES ($1, $2, $3)',
-		[pal.id, pen.id, pen.role]
+	await client.query<Record<string, never>, [string, string, string, string]>(
+		'INSERT INTO roles (id, pal_id, pen_id, role) VALUES ($1, $2, $3, $4)',
+		[newId(), pal.id, pen.id, pen.role]
 	)
 }
 

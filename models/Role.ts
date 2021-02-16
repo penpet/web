@@ -6,6 +6,11 @@ enum Role {
 
 export default Role
 
+export enum PublicRole {
+	Editor = 'editor',
+	Viewer = 'viewer'
+}
+
 export const serializeRole = (role: Role) => {
 	switch (role) {
 		case Role.Owner:
