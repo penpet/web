@@ -81,8 +81,9 @@ export default class Adapter extends DB {
 					)
 
 					await client.query('COMMIT')
-				} finally {
+				} catch (error) {
 					await client.query('ROLLBACK')
+					throw error
 				}
 
 				callback(null, true)

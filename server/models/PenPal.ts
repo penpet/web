@@ -3,6 +3,7 @@ import HttpError from '../utils/HttpError'
 
 import Pal from './Pal'
 import Role, { getRole } from './Role'
+import sendEmail from '../utils/sendEmail'
 
 export default interface PenPal {
 	id: string
@@ -99,10 +100,52 @@ export const createInvite = async (
 	pal: Pal,
 	invite: Invite
 ) => {
-	const role = await getRole(client, pal, penId)
+	const { rows: pens } = await client.query<
+		{ name: string; role: Role },
+		[string, string]
+	>(
+		`
+		SELECT
+			pens.name,
+			roles.role
+		FROM pens
+		LEFT JOIN roles ON
+			roles.pal_id = $1 AND
+			roles.pen_id = $2
+		WHERE pens.id = $2
+		`,
+		[pal.id, penId]
+	)
 
-	if (role !== Role.Owner)
-		throw new HttpError(403, 'You own the pen to invite people')
+	const pen = pens[0]
+	if (!pen) throw new HttpError(404, 'Pen not found')
 
-	throw new HttpError(500, 'Not implemented yet')
+	if (pen.role !== Role.Owner)
+		throw new HttpError(
+			403,
+			'You must be the owner of this pen to invite people'
+		)
+	
+	try {
+		await client.query('BEGIN')
+		
+		sendEmail({
+			from: 'penpet invites <invites@pen.pet>',
+			to: invite.email,
+			replyTo: pal.email,
+			template: 'invite',
+			context: {
+				id: ,
+				from: pal.name,
+				to: ,
+				pen: pen.name,
+				role: ,
+			}
+		})
+		
+		await client.query('COMMIT')
+	} catch (error) {
+		await client.query('ROLLBACK')
+		throw error
+	}
 }
