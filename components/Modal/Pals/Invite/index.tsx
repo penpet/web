@@ -1,4 +1,5 @@
 import { FormEvent, ChangeEvent, useState, useCallback } from 'react'
+import { mutate } from 'swr'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faEdit,
@@ -8,7 +9,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import Pen from 'models/Pen'
+import PenPal from 'models/PenPal'
 import Role from 'models/Role'
+import createInvite from 'lib/createInvite'
 import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
 
@@ -28,16 +31,24 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 	const onSubmit = useCallback(
 		async (event: FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
+			if (isDisabled) return
 
 			try {
 				setIsLoading(true)
+
+				const pal = await createInvite(pen.id, email, role)
+
+				mutate(`pens/${pen.id}/pals`, (pals: PenPal[] | undefined) => [
+					pal,
+					...(pals ?? [])
+				])
 			} catch (error) {
 				handleError(error)
 			} finally {
 				setIsLoading(false)
 			}
 		},
-		[email, role, setIsLoading]
+		[pen.id, email, role, isDisabled, setIsLoading]
 	)
 
 	const onEmailChange = useCallback(

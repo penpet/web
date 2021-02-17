@@ -12,6 +12,11 @@ export default interface PenPal {
 	active: boolean
 }
 
+export interface Invite {
+	email: string
+	role: Role.Viewer | Role.Editor
+}
+
 const getInvites = async (
 	client: PoolClient,
 	role: Role | null,
@@ -86,4 +91,16 @@ export const getPenPals = async (
 	])
 
 	return [...invites, ...roles]
+}
+
+export const createInvite = async (
+	client: PoolClient,
+	penId: string,
+	pal: Pal,
+	invite: Invite
+) => {
+	const role = await getRole(client, pal, penId)
+
+	if (role !== Role.Owner)
+		throw new HttpError(403, 'You own the pen to invite people')
 }

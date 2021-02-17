@@ -1,5 +1,4 @@
-import { Router } from 'express'
-import bodyParser from 'body-parser'
+import express, { Router } from 'express'
 import passport from 'passport'
 import rateLimit from 'express-rate-limit'
 
@@ -31,7 +30,7 @@ router.post(
 	'/auth/log-in',
 	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
 	assertUnauthenticated,
-	bodyParser.json(),
+	express.json(),
 	async (req, res, next) => {
 		try {
 			const user = await new Promise<Pal>((resolve, reject) => {
@@ -56,7 +55,7 @@ router.post(
 	'/auth/sign-up',
 	rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }),
 	assertUnauthenticated,
-	bodyParser.json(),
+	express.json(),
 	async (req, res) => {
 		try {
 			const { headers, body } = req

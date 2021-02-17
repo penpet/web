@@ -7,24 +7,17 @@ import fetch from 'lib/fetch'
 import handleError from 'lib/handleError'
 
 const usePals = (penId: string, shouldLoad = true) => {
-	const previousData = useRef<PenPal[] | undefined>()
+	const previous = useRef<PenPal[] | undefined>()
 
-	const { data, error } = useSWR<PenPal[], unknown>(
+	const { data: pals, error } = useSWR<PenPal[], unknown>(
 		shouldLoad ? `pens/${penId}/pals` : null,
 		fetch,
-		{ initialData: previousData.current }
-	)
-
-	const pals = useMemo(
-		() =>
-			data &&
-			data.sort((a, b) => serializeRole(a.role) - serializeRole(b.role)),
-		[data]
+		{ initialData: previous.current }
 	)
 
 	useEffect(() => {
-		previousData.current = data
-	}, [previousData, data])
+		previous.current = pals
+	}, [previous, pals])
 
 	useEffect(() => {
 		if (error) handleError(error)
