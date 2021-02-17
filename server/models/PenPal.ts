@@ -103,4 +103,6 @@ export const createInvite = async (
 
 	if (role !== Role.Owner)
 		throw new HttpError(403, 'You own the pen to invite people')
+
+	throw new HttpError(500, 'Not implemented yet')
 }
