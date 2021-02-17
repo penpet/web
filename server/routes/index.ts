@@ -2,7 +2,7 @@ import { Router } from 'express'
 import passport from 'passport'
 
 import session from './session'
-import cors from './cors'
+import security from './security'
 import auth from './auth'
 import upload from './upload'
 import pen from './pen'
@@ -10,7 +10,7 @@ import pal from './pal'
 
 const router = Router()
 
-router.use(cors)
+router.use(security)
 router.use(session)
 
 router.use(passport.initialize())
