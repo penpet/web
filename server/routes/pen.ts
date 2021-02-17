@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
 import { getPens, getPen, createPen } from '../models/Pen'
+import { getRole } from '../models/Role'
 import edit from '../models/Editor'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
@@ -54,12 +55,17 @@ router.get(
 	}
 )
 
-router.ws('/pens/:id', async (socket, req) => {
+router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
 	try {
-		const { id } = req.params
+		if (typeof id !== 'string') throw new Error('Invalid ID')
+		const client = await pool.connect()
 
-		if (typeof id !== 'string' || req.isUnauthenticated())
-			throw new Error('Bad request')
+		try {
+			if (!(await getRole(client, user as Pal | undefined, id)))
+				throw new Error('Private pen')
+		} finally {
+			client.release()
+		}
 
 		await edit(id, socket)
 

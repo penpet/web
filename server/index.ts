@@ -1,12 +1,10 @@
 import express from 'express'
 import ws from 'express-ws'
 import next from 'next'
-import aws from 'aws-sdk'
+import { config } from 'aws-sdk'
 
-const region = process.env.AWS_REGION
-if (!region) throw new Error('Missing AWS region')
-
-aws.config.region = region
+if (!(config.region = process.env.AWS_REGION))
+	throw new Error('Missing AWS region')
 
 const app = express()
 ws(app)
