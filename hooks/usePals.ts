@@ -1,8 +1,7 @@
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import useSWR from 'swr'
 
 import PenPal from 'models/PenPal'
-import { serializeRole } from 'models/Role'
 import fetch from 'lib/fetch'
 import handleError from 'lib/handleError'
 

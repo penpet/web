@@ -8,7 +8,7 @@ import newId from '../utils/newId'
 export interface PenData {
 	id: string
 	name: string
-	publicRole: PublicRole | null
+	public_role: PublicRole | null
 	created: string
 	updated: string
 }
@@ -23,7 +23,7 @@ export const getPens = async (client: PoolClient, pal: Pal) => {
 		SELECT
 			pens.id,
 			pens.name,
-			pens.role AS publicRole,
+			pens.role AS public_role,
 			pens.created,
 			pens.updated,
 			roles.role
@@ -51,7 +51,7 @@ export const getPen = async (
 			SELECT
 				pens.id,
 				pens.name,
-				pens.role AS publicRole,
+				pens.role AS public_role,
 				pens.created,
 				pens.updated,
 				roles.role
@@ -65,7 +65,7 @@ export const getPen = async (
 			SELECT
 				id,
 				name,
-				role AS publicRole,
+				role AS public_role,
 				created,
 				updated
 			FROM pens
@@ -77,7 +77,7 @@ export const getPen = async (
 	const pen = pens[0]
 	if (!pen) throw new HttpError(404, 'Pen not found')
 
-	const role = combineRole(pen.role, pen.publicRole)
+	const role = combineRole(pen.role, pen.public_role)
 	if (!role) throw new HttpError(401, 'Private pen')
 
 	return { ...pen, role }

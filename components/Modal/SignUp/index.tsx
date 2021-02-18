@@ -1,16 +1,17 @@
 import { useState, useCallback, ChangeEvent } from 'react'
+import { useRecoilState } from 'recoil'
 
 import Pal from 'models/Pal'
 import fetch from 'lib/fetch'
-import { IsModalShowingProps } from '..'
+import { signUpModalState } from 'state/authModal'
+import authState from 'state/auth'
 import Modal from '../Auth'
 
 import styles from './index.module.scss'
 
-const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
-	const [name, setName] = useState('')
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+const SignUpModal = () => {
+	const [isShowing, setIsShowing] = useRecoilState(signUpModalState)
+	const [{ name, email, password }, setState] = useRecoilState(authState)
 
 	const [isLoading, setIsLoading] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -39,23 +40,23 @@ const SignUpModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 	const onNameChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
-			setName(event.target.value)
+			setState(state => ({ ...state, name: event.target.value }))
 		},
-		[setName]
+		[setState]
 	)
 
 	const onEmailChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
-			setEmail(event.target.value)
+			setState(state => ({ ...state, email: event.target.value }))
 		},
-		[setEmail]
+		[setState]
 	)
 
 	const onPasswordChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
-			setPassword(event.target.value)
+			setState(state => ({ ...state, password: event.target.value }))
 		},
-		[setPassword]
+		[setState]
 	)
 
 	return (

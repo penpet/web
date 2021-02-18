@@ -3,7 +3,7 @@ import Role, { PublicRole } from './Role'
 export interface PenData {
 	id: string
 	name: string
-	publicRole: PublicRole | null
+	public_role: PublicRole | null
 	created: string
 	updated: string
 	role: Role

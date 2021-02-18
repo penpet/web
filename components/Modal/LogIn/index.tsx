@@ -1,15 +1,17 @@
 import { useState, useCallback, ChangeEvent } from 'react'
+import { useRecoilState } from 'recoil'
 
 import Pal from 'models/Pal'
 import fetch from 'lib/fetch'
-import { IsModalShowingProps } from '..'
+import { logInModalState } from 'state/authModal'
+import authState from 'state/auth'
 import Modal from '../Auth'
 
 import styles from './index.module.scss'
 
-const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+const LogInModal = () => {
+	const [isShowing, setIsShowing] = useRecoilState(logInModalState)
+	const [{ email, password }, setState] = useRecoilState(authState)
 
 	const [isLoading, setIsLoading] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -38,16 +40,16 @@ const LogInModal = ({ isShowing, setIsShowing }: IsModalShowingProps) => {
 
 	const onEmailChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
-			setEmail(event.target.value)
+			setState(state => ({ ...state, email: event.target.value }))
 		},
-		[setEmail]
+		[setState]
 	)
 
 	const onPasswordChange = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
-			setPassword(event.target.value)
+			setState(state => ({ ...state, password: event.target.value }))
 		},
-		[setPassword]
+		[setState]
 	)
 
 	return (

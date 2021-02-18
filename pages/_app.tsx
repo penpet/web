@@ -7,6 +7,8 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import getInitialState from 'lib/getInitialState'
 import initializeState from 'state'
 import useProgress from 'hooks/useProgress'
+import LogInModal from 'components/Modal/LogIn'
+import SignUpModal from 'components/Modal/SignUp'
 
 import styles from 'components/App/index.module.scss'
 
@@ -40,6 +42,8 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 			</Head>
 			<RecoilRoot initializeState={initializeState(pageProps)}>
 				<Component {...pageProps} />
+				<LogInModal />
+				<SignUpModal />
 				<ToastContainer />
 			</RecoilRoot>
 		</>

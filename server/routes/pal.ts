@@ -2,12 +2,13 @@ import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
-import { Invite, getPenPals, createInvite } from '../models/PenPal'
+import { getPenPals } from '../models/PenPal'
+import { createInvite } from '../models/Invite'
+import Role from '../models/Role'
 import { assertAuthenticated } from '../utils/assert'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
 import pool from '../database'
-import Role from '../models/Role'
 
 const router = Router()
 
@@ -48,7 +49,10 @@ router.post(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const { email, role }: Invite = body
+			const { email, role } = body as {
+				email: unknown
+				role: unknown
+			}
 
 			if (
 				!(
@@ -61,7 +65,13 @@ router.post(
 			const client = await pool.connect()
 
 			try {
-				res.send(await createInvite(client, id, user as Pal, body))
+				const pal = await createInvite(client, user as Pal, {
+					pen_id: id,
+					email,
+					role
+				})
+
+				res.send(pal)
 			} finally {
 				client.release()
 			}

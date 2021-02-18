@@ -7,6 +7,7 @@ import auth from './auth'
 import upload from './upload'
 import pen from './pen'
 import pal from './pal'
+import invite from './invite'
 
 const router = Router()
 
@@ -20,5 +21,6 @@ router.use(auth)
 router.use(upload)
 router.use(pen)
 router.use(pal)
+router.use(invite)
 
 export default router

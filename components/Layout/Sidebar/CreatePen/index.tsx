@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react'
 import { mutate } from 'swr'
-import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 

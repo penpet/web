@@ -12,11 +12,11 @@ export interface SidebarPenProps {
 }
 
 const SidebarPen = ({ pen }: SidebarPenProps) => {
-	const { id } = useRouter().query as PenQuery
+	const { pen: penId } = useRouter().query as PenQuery
 
 	return (
 		<Link href={`/${pen.id}`}>
-			<a className={styles.root} aria-current={pen.id === id && 'page'}>
+			<a className={styles.root} aria-current={pen.id === penId && 'page'}>
 				<span className={styles.name}>{pen.name}</span>
 				<span className={styles.info}>
 					<span>{formatTimeAgo(pen.updated)}</span>

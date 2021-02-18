@@ -1,0 +1,7 @@
+@use 'styles/spinner';
+
+.spinner {
+	@include spinner.options(20px, 3px, white);
+
+	margin: auto;
+}

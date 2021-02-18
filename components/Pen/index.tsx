@@ -51,7 +51,7 @@ const PenPage: NextPage<PenPageProps> = ({ pen: penData }) => {
 
 PenPage.getInitialProps = async context => {
 	try {
-		const { id } = context.query
+		const { pen: id } = context.query
 		if (typeof id !== 'string') throw new HttpError(404, 'Invalid ID')
 
 		return { pen: await getPen(context, id) }
