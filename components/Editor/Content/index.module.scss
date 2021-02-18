@@ -39,8 +39,6 @@ $selected: colors.$pink;
 
 .root :global {
 	@import 'quill/dist/quill.snow';
-	@import 'quill-upload-image/src';
-
 	@import 'katex/dist/katex';
 
 	.ql-editor {

@@ -1,19 +1,20 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
 import Quill, { TextChangeHandler } from 'quill'
-import ImageUploader from 'quill-upload-image'
+import UploadImage from 'quill-upload-image'
 import katex from 'katex'
 
 import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
 import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
+import UploadModal from 'components/Modal/Upload'
 
 import styles from './index.module.scss'
 
 ShareDB.types.register(richText.type)
-Quill.register('modules/imageUploader', ImageUploader)
+Quill.register('modules/uploadImage', UploadImage)
 
 export interface EditorContentProps {
 	id: string
@@ -21,9 +22,22 @@ export interface EditorContentProps {
 
 const EditorContent = ({ id }: EditorContentProps) => {
 	const [isLoading, setIsLoading] = useState(true)
+	const [isUploading, setIsUploading] = useState(false)
 
 	const toolbarRef = useRef<HTMLDivElement | null>(null)
 	const contentRef = useRef<HTMLDivElement | null>(null)
+
+	const uploadImage = useCallback(
+		async (file: File) => {
+			try {
+				setIsUploading(true)
+				return await upload(file)
+			} finally {
+				setIsUploading(false)
+			}
+		},
+		[setIsUploading]
+	)
 
 	useEffect(() => {
 		if (!('katex' in window))
@@ -61,7 +75,10 @@ const EditorContent = ({ id }: EditorContentProps) => {
 				placeholder: 'Write anything!',
 				modules: {
 					toolbar,
-					imageUploader: { upload }
+					uploadImage: {
+						upload: uploadImage,
+						onError: handleError
+					}
 				}
 			})
 
@@ -81,7 +98,7 @@ const EditorContent = ({ id }: EditorContentProps) => {
 
 			doc = quill = null
 		}
-	}, [id, toolbarRef, contentRef, setIsLoading])
+	}, [id, toolbarRef, contentRef, uploadImage, setIsLoading])
 
 	return (
 		<div key={id} className={styles.root} aria-busy={isLoading}>
@@ -132,6 +149,7 @@ const EditorContent = ({ id }: EditorContentProps) => {
 			</div>
 			<div className={styles.content} ref={contentRef} />
 			{isLoading && <Spinner className={styles.spinner} />}
+			<UploadModal isShowing={isUploading} setIsShowing={setIsUploading} />
 		</div>
 	)
 }
