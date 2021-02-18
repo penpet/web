@@ -42,13 +42,15 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 					pal,
 					...(pals ?? [])
 				])
+
+				setEmail('')
 			} catch (error) {
 				handleError(error)
 			} finally {
 				setIsLoading(false)
 			}
 		},
-		[pen.id, email, role, isDisabled, setIsLoading]
+		[pen.id, email, role, isDisabled, setEmail, setIsLoading]
 	)
 
 	const onEmailChange = useCallback(

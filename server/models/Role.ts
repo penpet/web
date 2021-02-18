@@ -9,6 +9,8 @@ enum Role {
 	Viewer = 'viewer'
 }
 
+export default Role
+
 export enum PublicRole {
 	Editor = 'editor',
 	Viewer = 'viewer'
@@ -62,5 +64,3 @@ export const getRole = async (
 
 	return combineRole(pen.role, pen.publicRole)
 }
-
-export default Role

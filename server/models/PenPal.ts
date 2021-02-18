@@ -3,6 +3,7 @@ import HttpError from '../utils/HttpError'
 
 import Pal from './Pal'
 import Role, { getRole } from './Role'
+import newId from '../utils/newId'
 import sendEmail from '../utils/sendEmail'
 
 export default interface PenPal {
@@ -97,11 +98,11 @@ export const getPenPals = async (
 export const createInvite = async (
 	client: PoolClient,
 	penId: string,
-	pal: Pal,
+	from: Pal,
 	invite: Invite
-) => {
+): Promise<PenPal> => {
 	const { rows: pens } = await client.query<
-		{ name: string; role: Role },
+		{ name: string; role: Role | null },
 		[string, string]
 	>(
 		`
@@ -114,7 +115,7 @@ export const createInvite = async (
 			roles.pen_id = $2
 		WHERE pens.id = $2
 		`,
-		[pal.id, penId]
+		[from.id, penId]
 	)
 
 	const pen = pens[0]
@@ -125,27 +126,68 @@ export const createInvite = async (
 			403,
 			'You must be the owner of this pen to invite people'
 		)
-	
+
+	const { rows: tos } = await client.query<
+		{ name: string; role: Role | null },
+		[string, string]
+	>(
+		`
+		SELECT pals.name, roles.role
+		FROM pals
+		LEFT JOIN roles ON
+			roles.pal_id = pals.id AND
+			roles.pen_id = $2
+		WHERE pals.email = $1
+		`,
+		[invite.email, penId]
+	)
+
+	const to = tos[0]
+
+	if (to?.role)
+		throw new HttpError(
+			403,
+			`${to.name} is already a${to.role === Role.Viewer ? '' : 'n'} ${to.role}`
+		)
+
+	const id = newId()
+
 	try {
 		await client.query('BEGIN')
-		
-		sendEmail({
+
+		await client.query<Record<string, never>, [string, string, string, Role]>(
+			`
+			INSERT INTO invites (id, pen_id, email, role)
+			VALUES ($1, $2, $3, $4)
+			`,
+			[id, penId, invite.email, invite.role]
+		)
+
+		await sendEmail({
 			from: 'penpet invites <invites@pen.pet>',
 			to: invite.email,
-			replyTo: pal.email,
+			replyTo: from.email,
 			template: 'invite',
 			context: {
-				id: ,
-				from: pal.name,
-				to: ,
+				id,
+				from: from.name,
+				to: to?.name ?? invite.email,
 				pen: pen.name,
-				role: ,
+				role: invite.role === Role.Viewer ? 'view' : 'edit'
 			}
 		})
-		
+
 		await client.query('COMMIT')
 	} catch (error) {
 		await client.query('ROLLBACK')
 		throw error
+	}
+
+	return {
+		id,
+		name: to ? to.name : null,
+		email: invite.email,
+		role: invite.role,
+		active: false
 	}
 }
