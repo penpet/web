@@ -24,7 +24,7 @@ const LogInModal = () => {
 		try {
 			setIsLoading(true)
 
-			return fetch<Pal>('auth/log-in', {
+			return await fetch<Pal>('auth/log-in', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password })
