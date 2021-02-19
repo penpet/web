@@ -105,7 +105,7 @@ router.patch(
 	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
 	assertAuthenticated,
 	express.json(),
-	async ({ query: { id }, headers, body, user }, res) => {
+	async ({ params: { id }, headers, body, user }, res) => {
 		try {
 			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
 

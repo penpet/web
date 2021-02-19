@@ -12,6 +12,10 @@
 	border-radius: 8px;
 	transition: background 0.3s;
 
+	&::placeholder {
+		color: transparentize(white, 0.5);
+	}
+
 	&:not(:disabled) {
 		&:hover,
 		&:focus {
