@@ -1,7 +1,23 @@
-.name {
+@use 'styles/spinner';
+
+.root {
+	display: flex;
+	align-items: center;
 	margin: 0 auto;
+}
+
+.name,
+.editName {
+	margin-right: 12px;
+}
+
+.name {
 	font-size: 20px;
 	font-weight: 900;
 	color: white;
 	text-shadow: 0 0 5px transparentize(white, 0.5);
+}
+
+.spinner {
+	@include spinner.options(18px, 3px, white);
 }

@@ -1,7 +1,7 @@
 import { PoolClient } from 'pg'
 
 import Pal from './Pal'
-import Role, { PublicRole, createRole, combineRole } from './Role'
+import Role, { PublicRole, createRole, combineRole, getRole } from './Role'
 import HttpError from '../utils/HttpError'
 import newId from '../utils/newId'
 
@@ -100,4 +100,28 @@ export const createPen = async (client: PoolClient, pal: Pal) => {
 	await createRole(client, pal, pen)
 
 	return pen
+}
+
+export const editPenName = async (
+	client: PoolClient,
+	pal: Pal,
+	id: string,
+	name: string
+) => {
+	const role = await getRole(client, pal, id)
+
+	if (role !== Role.Owner)
+		throw new HttpError(
+			403,
+			'You must be the owner of this pen to change its name'
+		)
+
+	await client.query<Record<string, never>, [string, string]>(
+		`
+		UPDATE pens
+		SET name = $2
+		WHERE id = $1
+		`,
+		[id, name]
+	)
 }

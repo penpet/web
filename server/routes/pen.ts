@@ -1,8 +1,8 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
-import { getPens, getPen, createPen } from '../models/Pen'
+import { getPens, getPen, createPen, editPenName } from '../models/Pen'
 import { getRole } from '../models/Role'
 import edit from '../models/Editor'
 import sendError from '../utils/sendError'
@@ -96,6 +96,43 @@ router.post(
 			}
 		} catch (error) {
 			sendError(res, error, 401)
+		}
+	}
+)
+
+router.patch(
+	'/pens/:id',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
+	assertAuthenticated,
+	express.json(),
+	async ({ query: { id }, headers, body, user }, res) => {
+		try {
+			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
+
+			if (
+				!(
+					headers['content-type'] === 'application/json' &&
+					typeof body === 'object' &&
+					body
+				)
+			)
+				throw new HttpError(400, 'Invalid body')
+
+			const { name } = body
+
+			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
+			if (!name) throw new HttpError(400, 'Invalid name')
+
+			const client = await pool.connect()
+
+			try {
+				await editPenName(client, user as Pal, id, name)
+				res.send()
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 500)
 		}
 	}
 )

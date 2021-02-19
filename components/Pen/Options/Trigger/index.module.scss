@@ -1,0 +1,11 @@
+.root {
+	display: flex;
+	font-size: 20px;
+	color: white;
+	background: none;
+	transition: opacity 0.3s;
+
+	&:hover {
+		opacity: 0.7;
+	}
+}
