@@ -6,10 +6,9 @@ import {
 	useCallback,
 	useEffect
 } from 'react'
-import { mutate } from 'swr'
 import cx from 'classnames'
 
-import Pen, { PenData } from 'models/Pen'
+import Pen from 'models/Pen'
 import editPenName from 'lib/editPenName'
 import handleError from 'lib/handleError'
 
@@ -42,11 +41,6 @@ const PenEditName = ({
 		try {
 			setIsLoading(true)
 			await editPenName(id, name)
-
-			mutate('pens', (pens: PenData[]) =>
-				pens.map(pen => (pen.id === id ? { ...pen, name } : pen))
-			)
-			mutate(`pens/${id}`, (pen: PenData | null) => pen && { ...pen, name })
 
 			setIsShowing(false)
 		} catch (error) {

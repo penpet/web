@@ -1,9 +1,7 @@
 import { useState, useCallback } from 'react'
-import { mutate } from 'swr'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
-import { PenData } from 'models/Pen'
 import createPen from 'lib/createPen'
 import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
@@ -16,9 +14,7 @@ const SidebarCreatePen = () => {
 	const onCreatePen = useCallback(async () => {
 		try {
 			setIsLoading(true)
-
-			const pen = await createPen()
-			mutate('pens', (pens: PenData[]) => [pen, ...pens])
+			await createPen()
 		} catch (error) {
 			handleError(error)
 		} finally {

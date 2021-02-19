@@ -1,5 +1,4 @@
 import { FormEvent, ChangeEvent, useState, useCallback } from 'react'
-import { mutate } from 'swr'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faEdit,
@@ -9,7 +8,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import Pen from 'models/Pen'
-import PenPal from 'models/PenPal'
 import Role from 'models/Role'
 import createInvite from 'lib/createInvite'
 import handleError from 'lib/handleError'
@@ -35,13 +33,7 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 
 			try {
 				setIsLoading(true)
-
-				const pal = await createInvite(pen.id, email, role)
-
-				mutate(`pens/${pen.id}/pals`, (pals: PenPal[] | undefined) => [
-					pal,
-					...(pals ?? [])
-				])
+				await createInvite(pen.id, email, role)
 
 				setEmail('')
 			} catch (error) {

@@ -27,7 +27,6 @@ const PenOptionsContent = ({
 	setIsShowing
 }: PenOptionsContentProps) => {
 	const [isDeleteRoleLoading, setIsDeleteRoleLoading] = useState(false)
-
 	const isOwner = pen.role === Role.Owner
 
 	const editName = useCallback(() => {
