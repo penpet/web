@@ -18,5 +18,9 @@ export default session({
 	secret,
 	resave: false,
 	saveUninitialized: false,
-	cookie: { maxAge: MAX_AGE, sameSite: 'lax', secure: !DEV }
+	cookie: {
+		maxAge: MAX_AGE,
+		sameSite: DEV ? 'lax' : 'none',
+		secure: !DEV
+	}
 })
