@@ -1,7 +1,12 @@
 import { PoolClient } from 'pg'
 
 import Pal from './Pal'
-import Role, { PublicRole, createRole, combineRole, getRole } from './Role'
+import Role, {
+	PublicRole,
+	createRole,
+	combineRole,
+	getPrivateRole
+} from './Role'
 import HttpError from '../utils/HttpError'
 import newId from '../utils/newId'
 
@@ -105,10 +110,10 @@ export const createPen = async (client: PoolClient, pal: Pal) => {
 export const editPenName = async (
 	client: PoolClient,
 	pal: Pal,
-	id: string,
+	penId: string,
 	name: string
 ) => {
-	const role = await getRole(client, pal, id)
+	const role = await getPrivateRole(client, pal, penId)
 
 	if (role !== Role.Owner)
 		throw new HttpError(
@@ -122,6 +127,6 @@ export const editPenName = async (
 		SET name = $2
 		WHERE id = $1
 		`,
-		[id, name]
+		[penId, name]
 	)
 }

@@ -1,4 +1,5 @@
 import { PoolClient } from 'pg'
+import HttpError from '../utils/HttpError'
 
 import Pal from './Pal'
 import Pen from './Pen'
@@ -87,6 +88,23 @@ export const getRole = async (
 	return combineRole(pen.role, pen.public_role)
 }
 
+export const getPrivateRole = async (
+	client: PoolClient,
+	pal: Pal,
+	penId: string
+): Promise<Role | null> => {
+	const { rows } = await client.query<{ role: Role }, [string, string]>(
+		`
+		SELECT role
+		FROM roles
+		WHERE pal_id = $1 AND pen_id = $2
+		`,
+		[pal.id, penId]
+	)
+
+	return rows[0]?.role ?? null
+}
+
 export const createRole = async (client: PoolClient, pal: Pal, pen: Pen) => {
 	await client.query<Record<string, never>, [string, string, string]>(
 		`
@@ -94,5 +112,25 @@ export const createRole = async (client: PoolClient, pal: Pal, pen: Pen) => {
 		VALUES ($1, $2, $3)
 		`,
 		[pal.id, pen.id, pen.role]
+	)
+}
+
+export const deleteOwnRole = async (
+	client: PoolClient,
+	pal: Pal,
+	penId: string
+) => {
+	const role = await getPrivateRole(client, pal, penId)
+
+	if (!role) throw new HttpError(403, 'This pen is not in your library')
+	if (role === Role.Owner)
+		throw new HttpError(403, 'You cannot remove your own pen from your library')
+
+	await client.query<Record<string, never>, [string, string]>(
+		`
+		DELETE FROM roles
+		WHERE pal_id = $1 AND pen_id = $2
+		`,
+		[pal.id, penId]
 	)
 }

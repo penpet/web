@@ -1,4 +1,5 @@
 @use 'styles/colors';
+@use 'styles/spinner';
 
 .root {
 	display: flex;
@@ -10,6 +11,9 @@
 
 .action {
 	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 50px;
 	height: 30px;
 	color: white;
@@ -17,12 +21,16 @@
 	border-radius: 6px;
 	transition: background 0.3s, opacity 0.3s;
 
-	&:disabled {
+	&:disabled,
+	&[aria-busy='true'] {
 		pointer-events: none;
+	}
+
+	&:disabled {
 		opacity: 0.7;
 	}
 
-	&:not(:disabled):hover {
+	&:not(:disabled):not([aria-busy='true']):hover {
 		background: transparentize(white, 0.8);
 	}
 
@@ -33,4 +41,8 @@
 
 .danger:not(:disabled) {
 	background: colors.$red;
+}
+
+.spinner {
+	@include spinner.options(14px, 3px, white);
 }

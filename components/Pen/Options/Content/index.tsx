@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faEdit,
@@ -9,6 +9,9 @@ import cx from 'classnames'
 
 import Pen from 'models/Pen'
 import Role from 'models/Role'
+import deleteOwnRole from 'lib/deleteOwnRole'
+import handleError from 'lib/handleError'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
@@ -23,12 +26,29 @@ const PenOptionsContent = ({
 	editName: _editName,
 	setIsShowing
 }: PenOptionsContentProps) => {
+	const [isDeleteRoleLoading, setIsDeleteRoleLoading] = useState(false)
+
 	const isOwner = pen.role === Role.Owner
 
 	const editName = useCallback(() => {
+		if (!isOwner) return
+
 		_editName()
 		setIsShowing(false)
-	}, [_editName, setIsShowing])
+	}, [isOwner, _editName, setIsShowing])
+
+	const deleteRole = useCallback(async () => {
+		if (isOwner || isDeleteRoleLoading) return
+
+		try {
+			setIsDeleteRoleLoading(true)
+			await deleteOwnRole(pen.id)
+		} catch (error) {
+			handleError(error)
+		} finally {
+			setIsDeleteRoleLoading(false)
+		}
+	}, [pen.id, isOwner, isDeleteRoleLoading, setIsDeleteRoleLoading])
 
 	return (
 		<>
@@ -43,10 +63,17 @@ const PenOptionsContent = ({
 			</button>
 			<button
 				className={cx(styles.action, styles.danger)}
+				disabled={isOwner}
+				onClick={deleteRole}
 				data-balloon-pos="up"
-				aria-label="Remove from your pens"
+				aria-label="Remove from my pens"
+				aria-busy={isDeleteRoleLoading}
 			>
-				<FontAwesomeIcon icon={faFolderMinus} />
+				{isDeleteRoleLoading ? (
+					<Spinner className={styles.spinner} />
+				) : (
+					<FontAwesomeIcon icon={faFolderMinus} />
+				)}
 			</button>
 			<button
 				className={cx(styles.action, styles.danger)}

@@ -4,9 +4,9 @@ import Pen from 'models/Pen'
 import EditName from '../EditName'
 import Options from '../Options'
 import Pals from '../Pals'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
-import Spinner from 'components/Spinner'
 
 export interface PenPageNavbarProps {
 	pen: Pen
