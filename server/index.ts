@@ -16,10 +16,7 @@ const nextApp = next({ dev: DEV, dir: ROOT })
 const nextRequestHandler = nextApp.getRequestHandler()
 
 app.set('trust proxy', 1)
-
 app.disable('x-powered-by')
-app.disable('via')
-app.disable('server')
 
 app.use(routes)
 app.use((req, res) => nextRequestHandler(req, res))

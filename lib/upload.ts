@@ -1,29 +1,38 @@
-import localFetch from './fetch'
+import type { S3 } from 'aws-sdk'
 
-interface SignedUrl {
+import HttpError from 'models/HttpError'
+import fetchJson from './fetch'
+
+interface UploadData {
 	url: string
-	destination: string
+	data: S3.PresignedPost
 }
 
 const upload = async (file: File) => {
 	if (!file.type.startsWith('image/'))
 		throw new Error('You must upload an image')
 
-	const { url, destination } = await localFetch<SignedUrl>(
-		`signed?name=${encodeURIComponent(file.name)}`,
-		{
-			headers: { 'Content-Type': file.type }
-		}
-	)
-
-	const response = await fetch(url, {
-		method: 'PUT',
-		headers: { 'Access-Control-Request-Method': 'PUT' },
-		body: file
+	const { url, data } = await fetchJson<UploadData>('upload', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ name: file.name, type: file.type })
 	})
-	if (!response.ok) throw new Error(await response.text())
 
-	return destination
+	const form = new FormData()
+
+	for (const [key, value] of Object.entries(data.fields))
+		form.append(key, value)
+
+	form.append('file', file)
+
+	const response = await fetch(data.url, {
+		method: 'POST',
+		body: form
+	})
+
+	if (!response.ok) throw new HttpError(response.status, await response.text())
+
+	return url
 }
 
 export default upload

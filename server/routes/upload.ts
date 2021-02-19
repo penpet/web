@@ -1,26 +1,36 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
 import { assertAuthenticated } from '../utils/assert'
 import HttpError from '../utils/HttpError'
-import getSignedUrl from '../utils/getSignedUrl'
+import getUploadData from '../utils/upload'
 import sendError from '../utils/sendError'
 
 const router = Router()
 
-router.get(
-	'/signed',
+router.post(
+	'/upload',
 	rateLimit({ windowMs: 15 * 60 * 1000, max: 60 }),
 	assertAuthenticated,
-	async ({ user, headers, query: { name } }, res) => {
+	express.json(),
+	async ({ headers, body, user }, res) => {
 		try {
-			const type = headers['content-type']
+			if (
+				!(
+					headers['content-type'] === 'application/json' &&
+					typeof body === 'object' &&
+					body
+				)
+			)
+				throw new HttpError(400, 'Invalid body')
 
-			if (typeof name !== 'string') throw new HttpError(400, 'Invalid name')
-			if (typeof type !== 'string') throw new HttpError(400, 'Invalid type')
+			const { name, type } = body
 
-			res.send(await getSignedUrl(user as Pal, name, type))
+			if (!(typeof name === 'string' && typeof type === 'string'))
+				throw new HttpError(400, 'Invalid body')
+
+			res.send(await getUploadData(user as Pal, body))
 		} catch (error) {
 			sendError(res, error, 500)
 		}

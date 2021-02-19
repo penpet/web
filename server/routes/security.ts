@@ -26,7 +26,7 @@ router.use((_req, res, next) => {
 				'default-src': [SELF],
 				'connect-src': [
 					SELF,
-					`https://s3.amazonaws.com/${process.env.AWS_S3_BUCKET}/`
+					`https://s3.amazonaws.com/${process.env.AWS_S3_BUCKET}`
 				],
 				'style-src': [SELF, INLINE],
 				'script-src': [
