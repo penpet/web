@@ -24,7 +24,12 @@ const PenPagePals = ({ pen }: PenPagePalsProps) => {
 				<FontAwesomeIcon className={styles.icon} icon={faUsers} />
 				pals
 			</button>
-			<PalsModal pen={pen} isShowing={isShowing} setIsShowing={setIsShowing} />
+			<PalsModal
+				key={pen.id}
+				pen={pen}
+				isShowing={isShowing}
+				setIsShowing={setIsShowing}
+			/>
 		</>
 	)
 }

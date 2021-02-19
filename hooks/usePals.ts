@@ -8,21 +8,21 @@ import handleError from 'lib/handleError'
 const usePals = (penId: string, shouldLoad = true) => {
 	const previous = useRef<PenPal[] | undefined>()
 
-	const { data: pals, error } = useSWR<PenPal[], unknown>(
+	const { data: current, error } = useSWR<PenPal[], unknown>(
 		shouldLoad ? `pens/${penId}/pals` : null,
 		fetch,
 		{ initialData: previous.current }
 	)
 
 	useEffect(() => {
-		previous.current = pals
-	}, [previous, pals])
+		previous.current = current
+	}, [previous, current])
 
 	useEffect(() => {
 		if (error) handleError(error)
 	}, [error])
 
-	return pals
+	return current
 }
 
 export default usePals
