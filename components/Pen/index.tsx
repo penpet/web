@@ -5,12 +5,12 @@ import { PenData } from 'models/Pen'
 import HttpError from 'models/HttpError'
 import getPen from 'lib/getPen'
 import { ORIGIN } from 'lib/constants'
+import usePen from 'hooks/usePen'
 import Layout from 'components/Layout'
 import Navbar from './Navbar'
 import Head from 'components/Head'
 import Editor from 'components/Editor'
 import ErrorMessage from 'components/Error'
-import usePen from 'hooks/usePen'
 
 const getErrorMessage = (status: number) => {
 	switch (status) {
