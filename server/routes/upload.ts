@@ -4,7 +4,7 @@ import rateLimit from 'express-rate-limit'
 import Pal from '../models/Pal'
 import { assertAuthenticated } from '../utils/assert'
 import HttpError from '../utils/HttpError'
-import getUploadData from '../utils/upload'
+import upload from '../utils/upload'
 import sendError from '../utils/sendError'
 
 const router = Router()
@@ -30,7 +30,7 @@ router.post(
 			if (!(typeof name === 'string' && typeof type === 'string'))
 				throw new HttpError(400, 'Invalid body')
 
-			res.send(await getUploadData(user as Pal, body))
+			res.send(await upload(user as Pal, body))
 		} catch (error) {
 			sendError(res, error, 500)
 		}
