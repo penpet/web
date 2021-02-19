@@ -1,5 +1,9 @@
 @use '~@fortawesome/fontawesome-svg-core/styles';
 @use '~react-toastify/dist/ReactToastify';
+@use '~balloon-css/src/balloon';
+
+@use 'styles/font';
+@use 'styles/colors';
 
 @font-face {
 	font-family: OperatorMono;
@@ -29,7 +33,7 @@ body {
 body,
 ::before,
 ::after {
-	font-family: OperatorMono, monospace;
+	font-family: font.$family;
 }
 
 pre,
@@ -53,4 +57,19 @@ button {
 	font-weight: bold;
 	padding-left: 16px;
 	border-radius: 5px;
+}
+
+[data-balloon-pos] {
+	&::before {
+		content: none !important;
+	}
+
+	&::after {
+		margin-bottom: 16px !important;
+		font-family: font.$family !important;
+		font-size: inherit !important;
+		background: colors.$background !important;
+		border: 1px solid colors.$border !important;
+		border-radius: 8px !important;
+	}
 }
