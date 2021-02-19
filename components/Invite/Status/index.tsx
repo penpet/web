@@ -1,14 +1,15 @@
+import Invite from 'models/Invite'
 import Auth from '../Auth'
 import ErrorMessage from 'components/Error'
 
 export interface InviteStatusProps {
-	status: number
+	invite: Invite | number
 }
 
-const InviteStatus = ({ status }: InviteStatusProps) => {
-	switch (status) {
-		case 401:
-			return <Auth />
+const InviteStatus = ({ invite }: InviteStatusProps) => {
+	if (typeof invite === 'object') return <Auth />
+
+	switch (invite) {
 		case 403:
 			return <ErrorMessage>This invite was not meant for you</ErrorMessage>
 		case 404:

@@ -6,11 +6,14 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { fetchVoid } from 'lib/fetch'
 import handleError from 'lib/handleError'
 import palState from 'state/pal'
+import useReload from 'hooks/useReload'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
 const ProfileDropdownContent = () => {
+	const reload = useReload()
+
 	const setPal = useSetRecoilState(palState)
 	const [isSignOutLoading, setIsSignOutLoading] = useState(false)
 
@@ -20,12 +23,13 @@ const ProfileDropdownContent = () => {
 			await fetchVoid('auth/sign-out', { method: 'POST' })
 
 			setPal(null)
+			reload()
 		} catch (error) {
 			handleError(error)
 		} finally {
 			setIsSignOutLoading(false)
 		}
-	}, [setPal, setIsSignOutLoading])
+	}, [reload, setPal, setIsSignOutLoading])
 
 	return (
 		<>

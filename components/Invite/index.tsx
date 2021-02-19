@@ -17,32 +17,28 @@ import Status from './Status'
 import styles from './index.module.scss'
 
 interface InvitePageProps {
-	status?: number
-	invite?: Invite
+	invite?: Invite | number
 }
 
-const InvitePage: NextPage<InvitePageProps> = ({
-	status: initialStatus,
-	invite
-}) => {
-	const [status, setStatus] = useState(initialStatus)
-	const [isLoading, setIsLoading] = useState(status === undefined)
+const InvitePage: NextPage<InvitePageProps> = ({ invite: initialInvite }) => {
+	const [invite, setInvite] = useState(initialInvite)
+	const [isLoading, setIsLoading] = useState(invite === undefined)
 
 	const isAuthorized = Boolean(useRecoilValue(palState))
 	const setAuthState = useSetRecoilState(authState)
 
 	useEffect(() => {
-		if (!(status === 401 && invite)) return
+		if (typeof invite !== 'object') return
 
 		setAuthState(state => ({
 			...state,
 			name: getNameFromEmail(invite.email) ?? state.name,
 			email: invite.email
 		}))
-	}, [status, invite, setAuthState])
+	}, [invite, setAuthState])
 
 	useEffect(() => {
-		if (!(status === 401 && invite && isAuthorized)) return
+		if (!(typeof invite === 'object' && isAuthorized)) return
 
 		let commit = true
 		setIsLoading(true)
@@ -59,7 +55,7 @@ const InvitePage: NextPage<InvitePageProps> = ({
 			.catch(error => {
 				if (!commit) return
 
-				setStatus(error instanceof HttpError ? error.status : 500)
+				setInvite(error instanceof HttpError ? error.status : 500)
 				setIsLoading(false)
 			})
 
@@ -67,14 +63,14 @@ const InvitePage: NextPage<InvitePageProps> = ({
 			commit = false
 			setIsLoading(false)
 		}
-	}, [status, invite, isAuthorized, setStatus, setIsLoading])
+	}, [invite, isAuthorized, setInvite, setIsLoading])
 
 	return (
 		<Layout>
 			{isLoading ? (
 				<Spinner className={styles.spinner} />
 			) : (
-				<Status status={status ?? 500} />
+				<Status invite={invite ?? 500} />
 			)}
 		</Layout>
 	)
@@ -92,9 +88,9 @@ InvitePage.getInitialProps = async context => {
 			return {}
 		}
 
-		return { status: 401, invite: response }
+		return { invite: response }
 	} catch (error) {
-		return { status: error instanceof HttpError ? error.status : 500 }
+		return { invite: error instanceof HttpError ? error.status : 500 }
 	}
 }
 

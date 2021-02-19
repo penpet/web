@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
-import { PenData, penFromData } from 'models/Pen'
+import { PenData } from 'models/Pen'
 import HttpError from 'models/HttpError'
 import getPen from 'lib/getPen'
 import { ORIGIN } from 'lib/constants'
@@ -10,7 +10,7 @@ import Navbar from './Navbar'
 import Head from 'components/Head'
 import Editor from 'components/Editor'
 import ErrorMessage from 'components/Error'
-import { useMemo } from 'react'
+import usePen from 'hooks/usePen'
 
 const getErrorMessage = (status: number) => {
 	switch (status) {
@@ -28,10 +28,7 @@ interface PenPageProps {
 }
 
 const PenPage: NextPage<PenPageProps> = ({ pen: penData }) => {
-	const pen = useMemo(
-		() => (typeof penData === 'object' ? penFromData(penData) : null),
-		[penData]
-	)
+	const pen = usePen(typeof penData === 'object' ? penData : null)
 
 	const errorMessage =
 		typeof penData === 'number' ? getErrorMessage(penData) : null

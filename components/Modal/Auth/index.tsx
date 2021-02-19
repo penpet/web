@@ -6,6 +6,7 @@ import cx from 'classnames'
 
 import Pal from 'models/Pal'
 import palState from 'state/pal'
+import useReload from 'hooks/useReload'
 import Modal, { IsModalShowingProps } from '..'
 import Spinner from 'components/Spinner'
 
@@ -32,6 +33,8 @@ const AuthModal = ({
 	setIsShowing,
 	children
 }: AuthModalProps) => {
+	const reload = useReload()
+
 	const [pal, setPal] = useRecoilState(palState)
 	const isAuthorized = Boolean(pal)
 
@@ -40,9 +43,12 @@ const AuthModal = ({
 			event.preventDefault()
 
 			const pal = await onSubmit()
-			if (pal) setPal(pal)
+			if (!pal) return
+
+			setPal(pal)
+			reload()
 		},
-		[onSubmit, setPal]
+		[onSubmit, reload, setPal]
 	)
 
 	const hide = useCallback(() => {
