@@ -1,9 +1,9 @@
 import { ReactNode, useCallback } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import Link from 'next/link'
 
-import palState from 'state/pal'
 import { logInModalState, signUpModalState } from 'state/authModal'
+import usePal from 'hooks/usePal'
 import ProfileDropdown from './ProfileDropdown'
 
 import styles from './index.module.scss'
@@ -13,7 +13,7 @@ export interface NavbarProps {
 }
 
 const Navbar = ({ items }: NavbarProps) => {
-	const pal = useRecoilValue(palState)
+	const pal = usePal()
 
 	const setIsLogInModalShowing = useSetRecoilState(logInModalState)
 	const setIsSignUpModalShowing = useSetRecoilState(signUpModalState)

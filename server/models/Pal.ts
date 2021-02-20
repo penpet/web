@@ -82,3 +82,18 @@ export const palFromId = async (client: PoolClient, id: string) => {
 
 	throw new HttpError(404, 'No user with the specified ID')
 }
+
+export const editPalName = async (
+	client: PoolClient,
+	pal: Pal,
+	name: string
+) => {
+	await client.query<Record<string, never>, [string, string]>(
+		`
+		UPDATE pals
+		SET name = $2
+		WHERE id = $1
+		`,
+		[pal.id, name]
+	)
+}

@@ -10,7 +10,11 @@ const usePen = (id: string | undefined) => {
 		fetch
 	)
 
-	return error ? (error instanceof HttpError ? error.status : 500) : data
+	return error
+		? error instanceof HttpError
+			? error.status
+			: 500
+		: data ?? null
 }
 
 export default usePen

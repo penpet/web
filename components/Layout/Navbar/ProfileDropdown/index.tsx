@@ -20,7 +20,7 @@ const ProfileDropdown = ({ pal }: ProfileDropdownProps) => {
 			isShowing={isShowing}
 			setIsShowing={setIsShowing}
 		>
-			<Content />
+			<Content pal={pal} />
 		</Dropdown>
 	)
 }

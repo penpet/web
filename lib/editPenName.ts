@@ -10,8 +10,8 @@ const editPenName = async (id: string, name: string) => {
 		body: JSON.stringify({ name })
 	})
 
-	mutate('pens', (pens: PenData[]) =>
-		pens.map(pen => (pen.id === id ? { ...pen, name } : pen))
+	mutate('pens', (pens: PenData[] | undefined) =>
+		pens?.map(pen => (pen.id === id ? { ...pen, name } : pen))
 	)
 
 	mutate(

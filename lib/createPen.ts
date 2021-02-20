@@ -8,7 +8,7 @@ const createPen = async () => {
 		method: 'POST'
 	})
 
-	mutate('pens', (pens: PenData[]) => [pen, ...pens])
+	mutate('pens', (pens: PenData[] | undefined) => [pen, ...(pens ?? [])])
 
 	return pen
 }

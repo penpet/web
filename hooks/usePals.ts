@@ -22,7 +22,7 @@ const usePals = (penId: string, shouldLoad = true) => {
 		if (error) handleError(error)
 	}, [error])
 
-	return current
+	return current ?? null
 }
 
 export default usePals

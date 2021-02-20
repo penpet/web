@@ -6,59 +6,42 @@ import {
 	useCallback,
 	useEffect
 } from 'react'
-import cx from 'classnames'
+import { mutate } from 'swr'
 
-import Pen from 'models/Pen'
-import editPenName from 'lib/editPenName'
+import Pal from 'models/Pal'
+import editPalName from 'lib/editPalName'
 import handleError from 'lib/handleError'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
-export interface PenEditNameProps {
-	className?: string
-	pen: Pen
-	setIsShowing(isShowing: boolean): void
-	isLoading: boolean
-	setIsLoading(isLoading: boolean): void
+export interface ProfileEditNameProps {
+	pal: Pal
 }
 
-const PenEditName = ({
-	className,
-	pen,
-	setIsShowing,
-	isLoading,
-	setIsLoading
-}: PenEditNameProps) => {
+const ProfileEditName = ({ pal }: ProfileEditNameProps) => {
 	const input = useRef<HTMLInputElement | null>(null)
 
-	const { id, name: currentName } = pen
+	const currentName = pal.name
 	const [name, setName] = useState(currentName)
 
+	const [isLoading, setIsLoading] = useState(false)
+
 	const edit = useCallback(async () => {
-		if (isLoading) return
-		if (!name || name === currentName) return setIsShowing(false)
+		if (!name || name === currentName || isLoading) return
 
 		try {
 			setIsLoading(true)
-			await editPenName(id, name)
+			await editPalName(name)
 
-			setIsShowing(false)
+			mutate('auth', (pal: Pal | null | undefined) => pal && { ...pal, name })
 		} catch (error) {
 			input.current?.focus()
 			handleError(error)
 		} finally {
 			setIsLoading(false)
 		}
-	}, [
-		input,
-		id,
-		currentName,
-		name,
-		isLoading,
-		setName,
-		setIsShowing,
-		setIsLoading
-	])
+	}, [input, currentName, name, isLoading, setName, setIsLoading])
 
 	const onSubmit = useCallback(
 		(event: FormEvent<HTMLFormElement>) => {
@@ -80,9 +63,16 @@ const PenEditName = ({
 	}, [input])
 
 	return (
-		<form className={cx(styles.root, className)} onSubmit={onSubmit}>
+		<form onSubmit={onSubmit}>
+			<div className={styles.header}>
+				<label className={styles.title} htmlFor="profile-dropdown-name-input">
+					name
+				</label>
+				{isLoading && <Spinner className={styles.spinner} />}
+			</div>
 			<input
 				ref={input}
+				id="profile-dropdown-name-input"
 				className={styles.input}
 				placeholder={currentName}
 				disabled={isLoading}
@@ -94,4 +84,4 @@ const PenEditName = ({
 	)
 }
 
-export default PenEditName
+export default ProfileEditName

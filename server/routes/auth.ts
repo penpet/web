@@ -2,7 +2,7 @@ import express, { Router } from 'express'
 import passport from 'passport'
 import rateLimit from 'express-rate-limit'
 
-import Pal, { palToPublic, createPal } from '../models/Pal'
+import Pal, { palToPublic, createPal, editPalName } from '../models/Pal'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
 import { assertAuthenticated, assertUnauthenticated } from '../utils/assert'
@@ -12,19 +12,42 @@ import '../passport'
 
 const router = Router()
 
-router.options(
-	['/auth/log-in', '/auth/sign-up', '/auth/sign-out'],
-	(_req, res, next) => {
-		res.header('Access-Control-Allow-Methods', 'OPTIONS, POST')
-		res.header('Access-Control-Allow-Headers', 'Content-Type')
-
-		next()
-	}
-)
-
 router.get('/auth', ({ user }, res) => {
 	res.json(user ? palToPublic(user as Pal) : null)
 })
+
+router.patch(
+	'/auth',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
+	assertAuthenticated,
+	express.json(),
+	async ({ headers, body, user }, res) => {
+		try {
+			if (
+				!(
+					headers['content-type'] === 'application/json' &&
+					typeof body === 'object' &&
+					body
+				)
+			)
+				throw new HttpError(400, 'Invalid body')
+
+			const { name } = body
+			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
+
+			const client = await pool.connect()
+
+			try {
+				await editPalName(client, user as Pal, name)
+				res.send()
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 500)
+		}
+	}
+)
 
 router.post(
 	'/auth/log-in',

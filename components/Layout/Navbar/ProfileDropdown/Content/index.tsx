@@ -1,20 +1,24 @@
 import { useState, useCallback } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { mutate } from 'swr'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
+import Pal from 'models/Pal'
 import { fetchVoid } from 'lib/fetch'
 import handleError from 'lib/handleError'
-import palState from 'state/pal'
 import useReload from 'hooks/useReload'
+import EditName from '../EditName'
+import Email from '../Email'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
 
-const ProfileDropdownContent = () => {
-	const reload = useReload()
+export interface ProfileDropdownContentProps {
+	pal: Pal
+}
 
-	const setPal = useSetRecoilState(palState)
+const ProfileDropdownContent = ({ pal }: ProfileDropdownContentProps) => {
+	const reload = useReload()
 	const [isSignOutLoading, setIsSignOutLoading] = useState(false)
 
 	const signOut = useCallback(async () => {
@@ -22,17 +26,19 @@ const ProfileDropdownContent = () => {
 			setIsSignOutLoading(true)
 			await fetchVoid('auth/sign-out', { method: 'POST' })
 
-			setPal(null)
+			mutate('auth', null)
 			reload()
 		} catch (error) {
 			handleError(error)
 		} finally {
 			setIsSignOutLoading(false)
 		}
-	}, [reload, setPal, setIsSignOutLoading])
+	}, [reload, setIsSignOutLoading])
 
 	return (
 		<>
+			<EditName pal={pal} />
+			<Email pal={pal} />
 			<button
 				className={styles.signOut}
 				disabled={isSignOutLoading}

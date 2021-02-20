@@ -6,11 +6,11 @@ import { PenData, penFromData } from 'models/Pen'
 import fetch from 'lib/fetch'
 import sortPens from 'lib/sortPens'
 import handleError from 'lib/handleError'
-import palState from 'state/pal'
 import pensState from 'state/pens'
+import usePal from './usePal'
 
 const usePens = () => {
-	const pal = useRecoilValue(palState)
+	const pal = usePal()
 	const initialPens = useRecoilValue(pensState)
 
 	const { data, error } = useSWR<PenData[], unknown>(pal && 'pens', fetch)

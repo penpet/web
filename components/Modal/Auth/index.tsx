@@ -1,11 +1,11 @@
 import { ReactNode, FormEvent, useCallback, useEffect } from 'react'
-import { useRecoilState } from 'recoil'
+import { mutate } from 'swr'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import cx from 'classnames'
 
 import Pal from 'models/Pal'
-import palState from 'state/pal'
+import usePal from 'hooks/usePal'
 import useReload from 'hooks/useReload'
 import Modal, { IsModalShowingProps } from '..'
 import Spinner from 'components/Spinner'
@@ -34,9 +34,7 @@ const AuthModal = ({
 	children
 }: AuthModalProps) => {
 	const reload = useReload()
-
-	const [pal, setPal] = useRecoilState(palState)
-	const isAuthorized = Boolean(pal)
+	const isAuthorized = Boolean(usePal())
 
 	const onSubmitEvent = useCallback(
 		async (event: FormEvent<HTMLFormElement>) => {
@@ -45,10 +43,10 @@ const AuthModal = ({
 			const pal = await onSubmit()
 			if (!pal) return
 
-			setPal(pal)
+			mutate('auth', pal)
 			reload()
 		},
-		[onSubmit, reload, setPal]
+		[onSubmit, reload]
 	)
 
 	const hide = useCallback(() => {

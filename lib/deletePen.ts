@@ -7,7 +7,10 @@ import { fetchVoid } from './fetch'
 const deletePen = async (id: string) => {
 	await fetchVoid(`pens/${id}`, { method: 'DELETE' })
 
-	mutate('pens', (pens: PenData[]) => pens.filter(pen => pen.id !== id))
+	mutate('pens', (pens: PenData[] | undefined) =>
+		pens?.filter(pen => pen.id !== id)
+	)
+
 	mutate(`pens/${id}`, null)
 
 	Router.replace('/')

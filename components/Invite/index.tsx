@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
+import { useSetRecoilState } from 'recoil'
 import { NextPage } from 'next'
 import Router from 'next/router'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import Invite from 'models/Invite'
 import HttpError from 'models/HttpError'
 import acceptInvite from 'lib/acceptInvite'
 import redirect from 'lib/redirect'
 import getNameFromEmail from 'lib/getNameFromEmail'
-import palState from 'state/pal'
 import authState from 'state/auth'
+import usePal from 'hooks/usePal'
 import Layout from 'components/Layout'
 import Spinner from 'components/Spinner'
 import Status from './Status'
@@ -24,7 +24,7 @@ const InvitePage: NextPage<InvitePageProps> = ({ invite: initialInvite }) => {
 	const [invite, setInvite] = useState(initialInvite)
 	const [isLoading, setIsLoading] = useState(invite === undefined)
 
-	const isAuthorized = Boolean(useRecoilValue(palState))
+	const isAuthorized = Boolean(usePal())
 	const setAuthState = useSetRecoilState(authState)
 
 	useEffect(() => {
