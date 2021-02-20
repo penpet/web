@@ -53,32 +53,33 @@ export default class Adapter extends DB {
 				try {
 					await client.query('BEGIN')
 
-					await client.query(
-						`
-						INSERT INTO operations (id, version, operation)
-						VALUES ($1, $2, $3)
-						`,
-						[id, snapshot.v, op]
-					)
-
-					await client.query(
-						snapshot.v === 1
-							? `
-							INSERT INTO snapshots (id, type, version, data)
-							VALUES ($1, $2, $3, $4)
+					await Promise.all([
+						client.query(
 							`
-							: `
-							UPDATE snapshots
-							SET
-								type = $2,
-								version = $3,
-								data = $4
-							WHERE
-								id = $1 AND
-								version = ($3 - 1)
+							INSERT INTO operations (id, version, operation)
+							VALUES ($1, $2, $3)
 							`,
-						[id, snapshot.type, snapshot.v, snapshot.data]
-					)
+							[id, snapshot.v, op]
+						),
+						client.query(
+							snapshot.v === 1
+								? `
+								INSERT INTO snapshots (id, type, version, data)
+								VALUES ($1, $2, $3, $4)
+								`
+								: `
+								UPDATE snapshots
+								SET
+									type = $2,
+									version = $3,
+									data = $4
+								WHERE
+									id = $1 AND
+									version = ($3 - 1)
+								`,
+							[id, snapshot.type, snapshot.v, snapshot.data]
+						)
+					])
 
 					await client.query('COMMIT')
 				} catch (error) {

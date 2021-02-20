@@ -1,7 +1,9 @@
+import { useMemo } from 'react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
-import { PenData } from 'models/Pen'
+import { PenData, penFromData } from 'models/Pen'
+import PenQuery from 'models/PenQuery'
 import HttpError from 'models/HttpError'
 import getPen from 'lib/getPen'
 import { ORIGIN } from 'lib/constants'
@@ -27,8 +29,14 @@ interface PenPageProps {
 	pen: PenData | number
 }
 
-const PenPage: NextPage<PenPageProps> = ({ pen: penData }) => {
-	const pen = usePen(typeof penData === 'object' ? penData : null)
+const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
+	const { pen: id } = useRouter().query as PenQuery
+	const penData = usePen(id) ?? initialPenData
+
+	const pen = useMemo(
+		() => (typeof penData === 'object' ? penFromData(penData) : null),
+		[penData]
+	)
 
 	const errorMessage =
 		typeof penData === 'number' ? getErrorMessage(penData) : null

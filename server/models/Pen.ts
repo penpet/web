@@ -130,3 +130,61 @@ export const editPenName = async (
 		[penId, name]
 	)
 }
+
+export const deletePen = async (
+	client: PoolClient,
+	pal: Pal,
+	penId: string
+) => {
+	const role = await getPrivateRole(client, pal, penId)
+
+	if (role !== Role.Owner)
+		throw new HttpError(403, 'You must be the owner of this pen to delete it')
+
+	try {
+		await client.query('BEGIN')
+
+		await Promise.all([
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM invites
+				WHERE pen_id = $1
+				`,
+				[penId]
+			),
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM roles
+				WHERE pen_id = $1
+				`,
+				[penId]
+			),
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM operations
+				WHERE id = $1
+				`,
+				[penId]
+			),
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM snapshots
+				WHERE id = $1
+				`,
+				[penId]
+			),
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM pens
+				WHERE id = $1
+				`,
+				[penId]
+			)
+		])
+
+		await client.query('COMMIT')
+	} catch (error) {
+		await client.query('ROLLBACK')
+		throw error
+	}
+}

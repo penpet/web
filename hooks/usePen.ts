@@ -1,22 +1,16 @@
-import { useMemo, useEffect } from 'react'
 import useSWR from 'swr'
 
-import { PenData, penFromData } from 'models/Pen'
+import { PenData } from 'models/Pen'
+import HttpError from 'models/HttpError'
 import fetch from 'lib/fetch'
-import handleError from 'lib/handleError'
 
-const usePen = (initialPen: PenData | null) => {
+const usePen = (id: string | undefined) => {
 	const { data, error } = useSWR<PenData | null, unknown>(
-		initialPen && `pens/${initialPen.id}`,
-		fetch,
-		{ initialData: initialPen }
+		id ? `pens/${id}` : null,
+		fetch
 	)
-
-	useEffect(() => {
-		if (error) handleError(error)
-	}, [error])
-
-	return useMemo(() => (data ? penFromData(data) : null), [data])
+	console.log(id, data, error)
+	return error ? (error instanceof HttpError ? error.status : 500) : data
 }
 
 export default usePen

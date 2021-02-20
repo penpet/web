@@ -173,21 +173,22 @@ export const acceptInvite = async (
 	try {
 		await client.query('BEGIN')
 
-		await client.query<Record<string, never>, [string]>(
-			`
-			DELETE FROM invites
-			WHERE id = $1
-			`,
-			[invite.id]
-		)
-
-		await client.query<Record<string, never>, [string, string, Role]>(
-			`
-			INSERT INTO roles (pal_id, pen_id, role)
-			VALUES ($1, $2, $3)
-			`,
-			[pal.id, invite.pen_id, invite.role]
-		)
+		await Promise.all([
+			client.query<Record<string, never>, [string]>(
+				`
+				DELETE FROM invites
+				WHERE id = $1
+				`,
+				[invite.id]
+			),
+			client.query<Record<string, never>, [string, string, Role]>(
+				`
+				INSERT INTO roles (pal_id, pen_id, role)
+				VALUES ($1, $2, $3)
+				`,
+				[pal.id, invite.pen_id, invite.role]
+			)
+		])
 
 		await client.query('COMMIT')
 	} catch (error) {

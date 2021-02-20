@@ -2,7 +2,13 @@ import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
 import Pal from '../models/Pal'
-import { getPens, getPen, createPen, editPenName } from '../models/Pen'
+import {
+	getPens,
+	getPen,
+	createPen,
+	editPenName,
+	deletePen
+} from '../models/Pen'
 import { getRole } from '../models/Role'
 import edit from '../models/Editor'
 import sendError from '../utils/sendError'
@@ -127,6 +133,27 @@ router.patch(
 
 			try {
 				await editPenName(client, user as Pal, id, name)
+				res.send()
+			} finally {
+				client.release()
+			}
+		} catch (error) {
+			sendError(res, error, 500)
+		}
+	}
+)
+
+router.delete(
+	'/pens/:id',
+	rateLimit({ windowMs: 60 * 60 * 1000, max: 60 }),
+	assertAuthenticated,
+	async ({ params: { id }, user }, res) => {
+		try {
+			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
+			const client = await pool.connect()
+
+			try {
+				await deletePen(client, user as Pal, id)
 				res.send()
 			} finally {
 				client.release()

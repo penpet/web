@@ -10,6 +10,7 @@ import cx from 'classnames'
 import Pen from 'models/Pen'
 import Role from 'models/Role'
 import deleteOwnRole from 'lib/deleteOwnRole'
+import _deletePen from 'lib/deletePen'
 import handleError from 'lib/handleError'
 import Spinner from 'components/Spinner'
 
@@ -27,6 +28,8 @@ const PenOptionsContent = ({
 	setIsShowing
 }: PenOptionsContentProps) => {
 	const [isDeleteRoleLoading, setIsDeleteRoleLoading] = useState(false)
+	const [isDeletePenLoading, setIsDeletePenLoading] = useState(false)
+
 	const isOwner = pen.role === Role.Owner
 
 	const editName = useCallback(() => {
@@ -43,11 +46,23 @@ const PenOptionsContent = ({
 			setIsDeleteRoleLoading(true)
 			await deleteOwnRole(pen.id)
 		} catch (error) {
-			handleError(error)
-		} finally {
 			setIsDeleteRoleLoading(false)
+			handleError(error)
 		}
 	}, [pen.id, isOwner, isDeleteRoleLoading, setIsDeleteRoleLoading])
+
+	const deletePen = useCallback(async () => {
+		if (!isOwner || isDeletePenLoading) return
+		if (!confirm('Are you sure? You cannot restore this pen.')) return
+
+		try {
+			setIsDeletePenLoading(true)
+			await _deletePen(pen.id)
+		} catch (error) {
+			setIsDeletePenLoading(false)
+			handleError(error)
+		}
+	}, [pen.id, isOwner, isDeletePenLoading, setIsDeletePenLoading])
 
 	return (
 		<>
@@ -56,7 +71,7 @@ const PenOptionsContent = ({
 				disabled={!isOwner}
 				onClick={editName}
 				data-balloon-pos="up"
-				aria-label="Rename this pen"
+				aria-label="Rename"
 			>
 				<FontAwesomeIcon icon={faEdit} />
 			</button>
@@ -77,10 +92,16 @@ const PenOptionsContent = ({
 			<button
 				className={cx(styles.action, styles.danger)}
 				disabled={!isOwner}
+				onClick={deletePen}
 				data-balloon-pos="up"
-				aria-label="Permanently delete this pen"
+				aria-label="Permanently delete"
+				aria-busy={isDeletePenLoading}
 			>
-				<FontAwesomeIcon icon={faTrash} />
+				{isDeletePenLoading ? (
+					<Spinner className={styles.spinner} />
+				) : (
+					<FontAwesomeIcon icon={faTrash} />
+				)}
 			</button>
 		</>
 	)
