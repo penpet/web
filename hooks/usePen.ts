@@ -9,7 +9,7 @@ const usePen = (id: string | undefined) => {
 		id ? `pens/${id}` : null,
 		fetch
 	)
-	console.log(id, data, error)
+
 	return error ? (error instanceof HttpError ? error.status : 500) : data
 }
 

@@ -10,7 +10,7 @@ const app = express()
 ws(app)
 
 import routes from './routes'
-import { DEV, ROOT, PORT } from './constants'
+import { DEV, ROOT, PORT, ORIGIN } from './constants'
 
 const nextApp = next({ dev: DEV, dir: ROOT })
 const nextRequestHandler = nextApp.getRequestHandler()
@@ -28,7 +28,7 @@ const start = async () => {
 		app.listen(PORT, resolve)
 	})
 
-	console.log(`Listening on http://localhost:${PORT}`)
+	console.log(`Listening on ${ORIGIN}`)
 }
 
 start()
