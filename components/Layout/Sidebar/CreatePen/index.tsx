@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import Router from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
@@ -14,7 +15,7 @@ const SidebarCreatePen = () => {
 	const onCreatePen = useCallback(async () => {
 		try {
 			setIsLoading(true)
-			await createPen()
+			Router.push(`/${(await createPen()).id}`)
 		} catch (error) {
 			handleError(error)
 		} finally {
