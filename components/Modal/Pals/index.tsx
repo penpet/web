@@ -40,9 +40,11 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 				{pals ? (
 					<>
 						{isOwner && <Invite pen={pen} />}
-						{pals.map(pal => (
-							<Row key={pal.id} pal={pal} pen={pen} />
-						))}
+						<div className={styles.pals}>
+							{pals.map(pal => (
+								<Row key={pal.id} pal={pal} pen={pen} />
+							))}
+						</div>
 					</>
 				) : (
 					<Spinner className={styles.spinner} />

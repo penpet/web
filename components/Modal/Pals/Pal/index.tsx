@@ -10,6 +10,7 @@ import {
 import PenPal from 'models/PenPal'
 import Pen from 'models/Pen'
 import Role from 'models/Role'
+import usePal from 'hooks/usePal'
 
 import styles from './index.module.scss'
 
@@ -19,6 +20,8 @@ export interface PenPagePalProps {
 }
 
 const PenPagePal = ({ pal, pen }: PenPagePalProps) => {
+	const self = usePal()
+
 	const [isLoading, setIsLoading] = useState(false)
 
 	const isOwner = pen.role === Role.Owner
@@ -38,32 +41,41 @@ const PenPagePal = ({ pal, pen }: PenPagePalProps) => {
 
 	const deleteRole = useCallback(() => {
 		console.log('Delete role')
-	}, [])
+	}, [isLoading])
 
 	return (
 		<div className={styles.root}>
-			<p className={styles.name}>{pal.name}</p>
+			<p className={styles.name}>
+				{pal.name ?? pal.email ?? '(error)'}
+				{pal.id === self?.id && <span className={styles.meta}> (me)</span>}
+				{pal.active || <span className={styles.meta}> (invited)</span>}
+			</p>
 			{isCollaboratorOwner ? (
-				<FontAwesomeIcon icon={faCrown} />
-			) : (
-				<>
+				<FontAwesomeIcon className={styles.owner} icon={faCrown} />
+			) : isOwner ? (
+				<div className={styles.roles}>
 					<button
-						className={styles.editor}
-						disabled={!isOwner || isLoading}
-						onClick={edit}
-						aria-selected={pal.role === Role.Editor}
-					>
-						<FontAwesomeIcon icon={faEdit} />
-					</button>
-					<button
-						className={styles.viewer}
+						className={styles.role}
 						disabled={!isOwner || isLoading}
 						onClick={view}
 						aria-selected={pal.role === Role.Viewer}
 					>
 						<FontAwesomeIcon icon={faEye} />
 					</button>
-				</>
+					<button
+						className={styles.role}
+						disabled={!isOwner || isLoading}
+						onClick={edit}
+						aria-selected={pal.role === Role.Editor}
+					>
+						<FontAwesomeIcon icon={faEdit} />
+					</button>
+				</div>
+			) : (
+				<FontAwesomeIcon
+					className={styles.roleIcon}
+					icon={pal.role === Role.Viewer ? faEye : faEdit}
+				/>
 			)}
 			{isOwner && !isCollaboratorOwner && (
 				<button

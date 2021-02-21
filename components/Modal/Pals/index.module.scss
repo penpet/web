@@ -42,8 +42,12 @@
 .content {
 	display: flex;
 	flex-direction: column;
-	min-height: 200px;
-	padding: 12px 0;
+	height: 300px;
+}
+
+.pals {
+	padding: 8px 16px 12px;
+	overflow-y: auto;
 }
 
 .spinner {

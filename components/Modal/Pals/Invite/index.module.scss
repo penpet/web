@@ -8,7 +8,7 @@ $height: 30px;
 	position: relative;
 	align-items: stretch;
 	height: $height;
-	margin: 0 16px;
+	margin: 12px 16px 8px;
 }
 
 .email {
@@ -52,8 +52,7 @@ $height: 30px;
 	border-radius: 8px;
 }
 
-.viewer,
-.editor {
+.role {
 	width: $height;
 	color: white;
 	background: transparentize(white, 0.9);

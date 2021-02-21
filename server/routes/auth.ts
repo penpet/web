@@ -33,7 +33,9 @@ router.patch(
 				throw new HttpError(400, 'Invalid body')
 
 			const { name } = body
+
 			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
+			if (!name) throw new HttpError(400, 'Invalid name')
 
 			const client = await pool.connect()
 

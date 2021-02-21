@@ -65,14 +65,14 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 			<input
 				className={styles.email}
 				type="email"
-				placeholder="Email"
+				placeholder="email"
 				value={email}
 				onChange={onEmailChange}
 			/>
 			<FontAwesomeIcon className={styles.emailIcon} icon={faEnvelope} />
 			<div className={styles.roles}>
 				<button
-					className={styles.viewer}
+					className={styles.role}
 					type="button"
 					disabled={isLoading}
 					onClick={view}
@@ -81,7 +81,7 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 					<FontAwesomeIcon icon={faEye} />
 				</button>
 				<button
-					className={styles.editor}
+					className={styles.role}
 					type="button"
 					disabled={isLoading}
 					onClick={edit}

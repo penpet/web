@@ -1,16 +1,50 @@
 @use 'styles/colors';
 
-$role-border-radius: 4px;
+$height: 25px;
+$spacing: 8px;
 
 .root {
 	display: flex;
+	align-items: center;
+	height: $height;
+
+	& + & {
+		height: $height + $spacing;
+		margin-top: $spacing;
+		padding-top: $spacing;
+		border-top: 1px solid colors.$border;
+	}
 }
 
 .name {
+	margin-right: auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: white;
 }
 
-.editor,
-.viewer {
+.meta {
+	opacity: 0.5;
+}
+
+.owner {
+	flex-shrink: 0;
+	color: white;
+}
+
+.roles {
+	flex-shrink: 0;
+	display: flex;
+	overflow: hidden;
+	margin: 0 12px;
+	border-radius: 6px;
+}
+
+.role {
+	width: $height;
+	height: $height;
+	font-size: 12px;
 	color: white;
 	background: transparentize(white, 0.9);
 	transition: background 0.3s;
@@ -24,13 +58,21 @@ $role-border-radius: 4px;
 	}
 }
 
-.editor {
-	border-radius: $role-border-radius 0 0 $role-border-radius;
-}
-
-.viewer {
-	border-radius: 0 $role-border-radius $role-border-radius 0;
+.roleIcon {
+	flex-shrink: 0;
+	margin-right: 3px;
+	color: white;
 }
 
 .delete {
+	flex-shrink: 0;
+	margin-right: 3px;
+	font-size: 16px;
+	color: colors.$red;
+	background: none;
+	transition: opacity 0.3s;
+
+	&:hover {
+		opacity: 0.7;
+	}
 }
