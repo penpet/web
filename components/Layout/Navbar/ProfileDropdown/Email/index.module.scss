@@ -1,0 +1,19 @@
+.root {
+	margin-top: 12px;
+}
+
+.title {
+	color: white;
+}
+
+.value {
+	display: block;
+	width: 100%;
+	margin-top: 4px;
+	padding: 5.5px 10px;
+	font-size: 16px;
+	color: white;
+	background: transparentize(white, 0.9);
+	border-radius: 8px;
+	transition: background 0.3s;
+}
