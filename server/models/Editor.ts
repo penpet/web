@@ -1,9 +1,10 @@
 import WebSocket from 'ws'
 import ShareDB from 'sharedb'
-import JSONStream from '@teamwork/websocket-json-stream'
 import richText from 'rich-text'
 
+import Role from './Role'
 import Adapter, { COLLECTION } from './Adapter'
+import Stream from './Stream'
 import { options as databaseOptions } from '../database'
 
 ShareDB.types.register(richText.type)
@@ -13,8 +14,8 @@ const server = new ShareDB({ db })
 
 const connection = server.connect()
 
-const edit = async (id: string, socket: WebSocket) => {
-	const doc = connection.get(COLLECTION, id)
+const edit = async (socket: WebSocket, penId: string, role: Role) => {
+	const doc = connection.get(COLLECTION, penId)
 
 	await new Promise<void>((resolve, reject) => {
 		doc.fetch(error => {
@@ -29,7 +30,7 @@ const edit = async (id: string, socket: WebSocket) => {
 			})
 		})
 
-	server.listen(new JSONStream(socket))
+	server.listen(new Stream(socket, role === Role.Viewer))
 }
 
 export default edit

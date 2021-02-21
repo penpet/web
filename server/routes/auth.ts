@@ -6,7 +6,7 @@ import Pal, { palToPublic, createPal, editPalName } from '../models/Pal'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
 import { assertAuthenticated, assertUnauthenticated } from '../utils/assert'
-import pool from '../database'
+import { useClient } from '../database'
 
 import '../passport'
 
@@ -37,14 +37,8 @@ router.patch(
 			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
 			if (!name) throw new HttpError(400, 'Invalid name')
 
-			const client = await pool.connect()
-
-			try {
-				await editPalName(client, user as Pal, name)
-				res.send()
-			} finally {
-				client.release()
-			}
+			await useClient(client => editPalName(client, user as Pal, name))
+			res.send()
 		} catch (error) {
 			sendError(res, error, 500)
 		}
@@ -109,21 +103,17 @@ router.post(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const client = await pool.connect()
+			const pal = await useClient(client =>
+				createPal(client, name, email, password)
+			)
 
-			try {
-				const pal = await createPal(client, name, email, password)
-
-				await new Promise<void>((resolve, reject) => {
-					req.logIn(pal, error => {
-						error ? reject(error) : resolve()
-					})
+			await new Promise<void>((resolve, reject) => {
+				req.logIn(pal, error => {
+					error ? reject(error) : resolve()
 				})
+			})
 
-				res.send(palToPublic(pal))
-			} finally {
-				client.release()
-			}
+			res.send(palToPublic(pal))
 		} catch (error) {
 			sendError(res, error, 401)
 		}

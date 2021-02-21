@@ -56,14 +56,14 @@ export const getRoles = async (
 
 export const getRole = async (
 	client: PoolClient,
-	pal: Pal | undefined,
+	palId: string | undefined,
 	penId: string
-) => {
+): Promise<Role | null> => {
 	const { rows: pens } = await client.query<
 		{ public_role: PublicRole | null; role?: Role | null },
 		[string, string] | [string]
 	>(
-		pal
+		palId
 			? `
 			SELECT
 				pens.role AS public_role,
@@ -79,7 +79,7 @@ export const getRole = async (
 			FROM pens
 			WHERE id = $1
 			`,
-		pal ? [pal.id, penId] : [penId]
+		palId ? [palId, penId] : [penId]
 	)
 
 	const pen = pens[0]

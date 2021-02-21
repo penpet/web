@@ -6,7 +6,7 @@ import { deleteOwnRole } from '../models/Role'
 import { assertAuthenticated } from '../utils/assert'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
-import pool from '../database'
+import { useClient } from '../database'
 
 const router = Router()
 
@@ -17,14 +17,12 @@ router.delete(
 	async ({ params: { id }, user }, res) => {
 		try {
 			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
-			const client = await pool.connect()
 
-			try {
+			await useClient(async client => {
 				await deleteOwnRole(client, user as Pal, id)
-				res.send()
-			} finally {
-				client.release()
-			}
+			})
+
+			res.send()
 		} catch (error) {
 			sendError(res, error, 500)
 		}

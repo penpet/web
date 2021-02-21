@@ -18,7 +18,7 @@ export const getPenPals = async (
 	pal: Pal | undefined,
 	penId: string
 ) => {
-	const role = await getRole(client, pal, penId)
+	const role = await getRole(client, pal?.id, penId)
 	if (!role) throw new HttpError(401, 'Private pen')
 
 	const [invites, roles] = await Promise.all([

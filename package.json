@@ -12,7 +12,6 @@
 		"@fortawesome/fontawesome-svg-core": "^1.2.34",
 		"@fortawesome/free-solid-svg-icons": "^5.15.2",
 		"@fortawesome/react-fontawesome": "^0.1.14",
-		"@teamwork/websocket-json-stream": "^2.0.0",
 		"aws-sdk": "^2.848.0",
 		"balloon-css": "^1.2.0",
 		"bcrypt": "^5.0.0",

@@ -8,7 +8,7 @@ import Role, { editRole, deleteRole } from '../models/Role'
 import { assertAuthenticated } from '../utils/assert'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
-import pool from '../database'
+import { useClient } from '../database'
 
 const router = Router()
 
@@ -18,13 +18,12 @@ router.get(
 	async ({ params: { pen: penId }, user }, res) => {
 		try {
 			if (typeof penId !== 'string') throw new HttpError(400, 'Invalid pen')
-			const client = await pool.connect()
 
-			try {
-				res.send(await getPenPals(client, user as Pal | undefined, penId))
-			} finally {
-				client.release()
-			}
+			const pals = await useClient(client =>
+				getPenPals(client, user as Pal | undefined, penId)
+			)
+
+			res.send(pals)
 		} catch (error) {
 			sendError(res, error, 500)
 		}
@@ -62,19 +61,11 @@ router.post(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const client = await pool.connect()
+			const pal = await useClient(client =>
+				createInvite(client, user as Pal, { pen_id: penId, email, role })
+			)
 
-			try {
-				const pal = await createInvite(client, user as Pal, {
-					pen_id: penId,
-					email,
-					role
-				})
-
-				res.send(pal)
-			} finally {
-				client.release()
-			}
+			res.send(pal)
 		} catch (error) {
 			sendError(res, error, 400)
 		}
@@ -113,14 +104,11 @@ router.patch(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const client = await pool.connect()
-
-			try {
+			await useClient(async client => {
 				await editRole(client, user as Pal, palId, penId, body)
-				res.send()
-			} finally {
-				client.release()
-			}
+			})
+
+			res.send()
 		} catch (error) {
 			sendError(res, error, 500)
 		}
@@ -149,14 +137,11 @@ router.delete(
 			const { active } = body as { active: unknown }
 			if (typeof active !== 'boolean') throw new HttpError(400, 'Invalid body')
 
-			const client = await pool.connect()
-
-			try {
+			await useClient(async client => {
 				await deleteRole(client, user as Pal, palId, penId, body)
-				res.send()
-			} finally {
-				client.release()
-			}
+			})
+
+			res.send()
 		} catch (error) {
 			sendError(res, error, 500)
 		}
