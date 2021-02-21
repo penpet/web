@@ -5,6 +5,7 @@ import Quill, { TextChangeHandler } from 'quill'
 import UploadImage from 'quill-upload-image'
 import katex from 'katex'
 
+import Pen from 'models/Pen'
 import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
 import handleError from 'lib/handleError'
@@ -12,20 +13,24 @@ import Spinner from 'components/Spinner'
 import UploadModal from 'components/Modal/Upload'
 
 import styles from './index.module.scss'
+import Role from 'models/Role'
 
 ShareDB.types.register(richText.type)
 Quill.register('modules/uploadImage', UploadImage)
 
 export interface EditorContentProps {
-	id: string
+	pen: Pen
 }
 
-const EditorContent = ({ id }: EditorContentProps) => {
-	const [isLoading, setIsLoading] = useState(true)
-	const [isUploading, setIsUploading] = useState(false)
+const EditorContent = ({ pen }: EditorContentProps) => {
+	const { id, role } = pen
+	const readonly = role === Role.Viewer
 
 	const toolbarRef = useRef<HTMLDivElement | null>(null)
 	const contentRef = useRef<HTMLDivElement | null>(null)
+
+	const [isLoading, setIsLoading] = useState(true)
+	const [isUploading, setIsUploading] = useState(false)
 
 	const uploadImage = useCallback(
 		async (file: File) => {
@@ -71,6 +76,7 @@ const EditorContent = ({ id }: EditorContentProps) => {
 			if (!doc) return
 
 			quill = new Quill(content, {
+				readOnly: readonly,
 				theme: 'snow',
 				placeholder: 'Write anything!',
 				modules: {
@@ -98,7 +104,7 @@ const EditorContent = ({ id }: EditorContentProps) => {
 
 			doc = quill = null
 		}
-	}, [id, toolbarRef, contentRef, uploadImage, setIsLoading])
+	}, [id, readonly, toolbarRef, contentRef, uploadImage, setIsLoading])
 
 	return (
 		<div key={id} className={styles.root} aria-busy={isLoading}>

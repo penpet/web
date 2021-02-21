@@ -48,7 +48,7 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 				title={`${pen?.name ?? errorMessage} | penpet`}
 				description="" // TODO: Add description
 			/>
-			{pen && <Editor id={pen.id} />}
+			{pen && <Editor pen={pen} />}
 			{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 		</Layout>
 	)
