@@ -53,10 +53,15 @@ button {
 }
 
 .Toastify__toast {
-	font-family: inherit;
-	font-weight: bold;
-	padding-left: 16px;
-	border-radius: 5px;
+	padding-left: 16px !important;
+	font-family: inherit !important;
+	font-weight: 900 !important;
+	border-radius: 8px !important;
+
+	&--dark {
+		background: colors.$background !important;
+		border: 1px solid colors.$border !important;
+	}
 }
 
 [data-balloon-pos] {

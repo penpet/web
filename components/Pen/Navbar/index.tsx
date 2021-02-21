@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react'
+import { toast } from 'react-toastify'
+import copy from 'copy-to-clipboard'
 
 import Pen from 'models/Pen'
 import EditName from '../EditName'
@@ -16,6 +18,11 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [isEditingName, setIsEditingName] = useState(false)
 
+	const copyName = useCallback(() => {
+		copy(pen.name)
+		toast.dark('Copied link to clipboard')
+	}, [pen.name])
+
 	const editName = useCallback(() => {
 		setIsEditingName(true)
 	}, [setIsEditingName])
@@ -32,7 +39,9 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 						setIsLoading={setIsLoading}
 					/>
 				) : (
-					<p className={styles.name}>{pen.name}</p>
+					<button className={styles.name} onClick={copyName}>
+						{pen.name}
+					</button>
 				)}
 				{isLoading ? (
 					<Spinner className={styles.spinner} />
