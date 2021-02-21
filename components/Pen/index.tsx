@@ -44,7 +44,7 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 	return (
 		<Layout navbar={pen && <Navbar pen={pen} />}>
 			<Head
-				url={`${ORIGIN}${useRouter().asPath}`}
+				url={`${ORIGIN}/${id}`}
 				title={`${pen?.name ?? errorMessage} | penpet`}
 				description="" // TODO: Add description
 			/>

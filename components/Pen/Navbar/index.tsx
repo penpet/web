@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { MouseEvent, useState, useCallback } from 'react'
 import { toast } from 'react-toastify'
 import copy from 'copy-to-clipboard'
 
@@ -18,10 +18,15 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [isEditingName, setIsEditingName] = useState(false)
 
-	const copyName = useCallback(() => {
-		copy(pen.name)
-		toast.dark('Copied link to clipboard')
-	}, [pen.name])
+	const copyName = useCallback(
+		(event: MouseEvent<HTMLAnchorElement>) => {
+			event.preventDefault()
+
+			copy(pen.name)
+			toast.dark('Copied link to clipboard')
+		},
+		[pen.name]
+	)
 
 	const editName = useCallback(() => {
 		setIsEditingName(true)
@@ -39,9 +44,15 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 						setIsLoading={setIsLoading}
 					/>
 				) : (
-					<button className={styles.name} onClick={copyName}>
+					<a
+						className={styles.name}
+						href={`/${pen.id}`}
+						onClick={copyName}
+						data-balloon-pos="down"
+						aria-label="Copy link"
+					>
 						{pen.name}
-					</button>
+					</a>
 				)}
 				{isLoading ? (
 					<Spinner className={styles.spinner} />
