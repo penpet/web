@@ -52,6 +52,9 @@ const PenPagePal = ({ pal, pen }: PenPagePalProps) => {
 	const deleteRole = useCallback(async () => {
 		if (!isOwner || isCollaboratorOwner || isLoading) return
 
+		if (!confirm(`Are you sure you want to remove ${pal.name} from this pen?`))
+			return
+
 		try {
 			setIsLoading(true)
 			await _deleteRole(pen.id, pal)

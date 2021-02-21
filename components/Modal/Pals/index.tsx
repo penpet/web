@@ -39,7 +39,7 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 					<Spinner className={styles.spinner} />
 				)}
 			</div>
-			<Link pen={pen} />
+			{(pen.role === Role.Owner || pen.public_role) && <Link pen={pen} />}
 		</Modal>
 	)
 }
