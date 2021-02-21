@@ -1,0 +1,57 @@
+@use 'styles/colors';
+
+.root {
+	flex-shrink: 0;
+	padding: 16px;
+	background: transparentize(black, 0.7);
+}
+
+.title {
+	display: block;
+	margin-bottom: 12px;
+	font-weight: 900;
+	color: white;
+}
+
+.icon {
+	margin-right: 8px;
+}
+
+.footer {
+	display: flex;
+	align-items: stretch;
+	height: 30px;
+}
+
+.link {
+	flex-grow: 1;
+	cursor: default;
+	padding: 0 12px;
+	color: white;
+	background: transparentize(white, 0.9);
+	border-radius: 8px;
+	transition: color 0.3s;
+
+	&:disabled {
+		color: transparentize(white, 0.3);
+	}
+}
+
+.copy {
+	flex-shrink: 0;
+	width: 40px;
+	margin-left: 12px;
+	color: white;
+	background: colors.$blue;
+	box-shadow: 0 0 10px 0 colors.$blue;
+	border-radius: 8px;
+	transition: background 0.3s, opacity 0.3s;
+
+	&:disabled {
+		opacity: 0.7;
+	}
+
+	&:not(:disabled):hover {
+		background: none;
+	}
+}

@@ -4,6 +4,7 @@
 $height: 30px;
 
 .root {
+	flex-shrink: 0;
 	display: flex;
 	position: relative;
 	align-items: stretch;

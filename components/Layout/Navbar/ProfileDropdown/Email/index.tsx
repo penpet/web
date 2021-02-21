@@ -15,7 +15,6 @@ const ProfileEmail = ({ pal }: ProfileEmailProps) => (
 			id="profile-dropdown-email-input"
 			className={styles.value}
 			readOnly
-			disabled
 			type="email"
 			value={pal.email}
 		/>

@@ -1,12 +1,10 @@
-import { useCallback } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-
 import Pen from 'models/Pen'
 import Role from 'models/Role'
 import usePals from 'hooks/usePals'
+import Header from './Header'
 import Invite from './Invite'
 import Row from './Pal'
+import Link from './Link'
 import Modal, { ModalProps } from '..'
 import Spinner from 'components/Spinner'
 
@@ -20,22 +18,13 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 	const pals = usePals(pen.id, isShowing)
 	const isOwner = pen.role === Role.Owner
 
-	const hide = useCallback(() => {
-		setIsShowing(false)
-	}, [setIsShowing])
-
 	return (
 		<Modal
 			className={styles.root}
 			isShowing={isShowing}
 			setIsShowing={setIsShowing}
 		>
-			<header className={styles.header}>
-				<h3 className={styles.title}>my pals</h3>
-				<button className={styles.hide} onClick={hide}>
-					<FontAwesomeIcon icon={faTimesCircle} />
-				</button>
-			</header>
+			<Header setIsShowing={setIsShowing} />
 			<div className={styles.content}>
 				{pals ? (
 					<>
@@ -50,6 +39,7 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 					<Spinner className={styles.spinner} />
 				)}
 			</div>
+			<Link pen={pen} />
 		</Modal>
 	)
 }
