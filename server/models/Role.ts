@@ -147,6 +147,36 @@ export const editRole = async (
 	)
 }
 
+export interface DeleteRoleOptions {
+	active: boolean
+}
+
+export const deleteRole = async (
+	client: PoolClient,
+	pal: Pal,
+	palId: string,
+	penId: string,
+	{ active }: DeleteRoleOptions
+) => {
+	if (pal.id === palId)
+		throw new HttpError(403, 'You cannot remove yourself from this pen')
+
+	const role = await getPrivateRole(client, pal.id, penId)
+
+	if (role !== Role.Owner)
+		throw new HttpError(403, 'You must own this pen to remove pals')
+
+	await client.query<Record<string, never>, [string, string]>(
+		`
+		DELETE FROM ${active ? 'roles' : 'invites'}
+		WHERE
+			${active ? 'pal_id' : 'id'} = $1 AND
+			pen_id = $2
+		`,
+		[palId, penId]
+	)
+}
+
 export const deleteOwnRole = async (
 	client: PoolClient,
 	pal: Pal,
