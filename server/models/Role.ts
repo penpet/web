@@ -90,7 +90,7 @@ export const getRole = async (
 
 export const getPrivateRole = async (
 	client: PoolClient,
-	pal: Pal,
+	palId: string,
 	penId: string
 ): Promise<Role | null> => {
 	const { rows } = await client.query<{ role: Role }, [string, string]>(
@@ -99,7 +99,7 @@ export const getPrivateRole = async (
 		FROM roles
 		WHERE pal_id = $1 AND pen_id = $2
 		`,
-		[pal.id, penId]
+		[palId, penId]
 	)
 
 	return rows[0]?.role ?? null
@@ -115,12 +115,44 @@ export const createRole = async (client: PoolClient, pal: Pal, pen: Pen) => {
 	)
 }
 
+export interface EditRoleOptions {
+	role: Role.Viewer | Role.Editor
+	active: boolean
+}
+
+export const editRole = async (
+	client: PoolClient,
+	pal: Pal,
+	palId: string,
+	penId: string,
+	{ role: newRole, active }: EditRoleOptions
+) => {
+	if (pal.id === palId)
+		throw new HttpError(403, 'You cannot edit your own role')
+
+	const role = await getPrivateRole(client, pal.id, penId)
+
+	if (role !== Role.Owner)
+		throw new HttpError(403, 'You must own this pen to edit roles')
+
+	await client.query<Record<string, never>, [string, string, Role]>(
+		`
+		UPDATE ${active ? 'roles' : 'invites'}
+		SET role = $3
+		WHERE
+			${active ? 'pal_id' : 'id'} = $1 AND
+			pen_id = $2
+		`,
+		[palId, penId, newRole]
+	)
+}
+
 export const deleteOwnRole = async (
 	client: PoolClient,
 	pal: Pal,
 	penId: string
 ) => {
-	const role = await getPrivateRole(client, pal, penId)
+	const role = await getPrivateRole(client, pal.id, penId)
 
 	if (!role) throw new HttpError(403, 'This pen is not in your library')
 	if (role === Role.Owner)

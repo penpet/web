@@ -113,7 +113,7 @@ export const editPenName = async (
 	penId: string,
 	name: string
 ) => {
-	const role = await getPrivateRole(client, pal, penId)
+	const role = await getPrivateRole(client, pal.id, penId)
 
 	if (role !== Role.Owner)
 		throw new HttpError(
@@ -136,7 +136,7 @@ export const deletePen = async (
 	pal: Pal,
 	penId: string
 ) => {
-	const role = await getPrivateRole(client, pal, penId)
+	const role = await getPrivateRole(client, pal.id, penId)
 
 	if (role !== Role.Owner)
 		throw new HttpError(403, 'You must be the owner of this pen to delete it')

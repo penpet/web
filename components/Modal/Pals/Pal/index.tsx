@@ -10,6 +10,9 @@ import {
 import PenPal from 'models/PenPal'
 import Pen from 'models/Pen'
 import Role from 'models/Role'
+import _setRole from 'lib/setRole'
+import _deleteRole from 'lib/deleteRole'
+import handleError from 'lib/handleError'
 import usePal from 'hooks/usePal'
 
 import styles from './index.module.scss'
@@ -27,21 +30,37 @@ const PenPagePal = ({ pal, pen }: PenPagePalProps) => {
 	const isOwner = pen.role === Role.Owner
 	const isCollaboratorOwner = pal.role === Role.Owner
 
-	const setRole = useCallback((role: Role) => {
-		console.log(`Set role to ${role}`)
-	}, [])
+	const setRole = useCallback(
+		async (role: Role) => {
+			if (!isOwner || isCollaboratorOwner || isLoading) return
 
-	const edit = useCallback(() => {
-		setRole(Role.Editor)
-	}, [setRole])
+			try {
+				setIsLoading(true)
+				await _setRole(pen.id, pal, role)
+			} catch (error) {
+				handleError(error)
+			} finally {
+				setIsLoading(false)
+			}
+		},
+		[pen.id, pal, isOwner, isCollaboratorOwner, isLoading]
+	)
 
-	const view = useCallback(() => {
-		setRole(Role.Viewer)
-	}, [setRole])
+	const edit = useCallback(() => setRole(Role.Editor), [setRole])
+	const view = useCallback(() => setRole(Role.Viewer), [setRole])
 
-	const deleteRole = useCallback(() => {
-		console.log('Delete role')
-	}, [isLoading])
+	const deleteRole = useCallback(async () => {
+		if (!isOwner || isCollaboratorOwner || isLoading) return
+
+		try {
+			setIsLoading(true)
+			await _deleteRole(pen.id, pal)
+		} catch (error) {
+			handleError(error)
+		} finally {
+			setIsLoading(false)
+		}
+	}, [pen.id, pal, isOwner, isCollaboratorOwner, isLoading, setIsLoading])
 
 	return (
 		<div className={styles.root}>

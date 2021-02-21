@@ -28,13 +28,25 @@ $spacing: 8px;
 	opacity: 0.5;
 }
 
-.owner {
+.owner,
+.roles,
+.roleIcon,
+.delete {
 	flex-shrink: 0;
-	color: white;
+}
+
+.role,
+.delete {
+	&:disabled {
+		opacity: 0.5;
+	}
+}
+
+.owner {
+	color: gold;
 }
 
 .roles {
-	flex-shrink: 0;
 	display: flex;
 	overflow: hidden;
 	margin: 0 12px;
@@ -47,25 +59,23 @@ $spacing: 8px;
 	font-size: 12px;
 	color: white;
 	background: transparentize(white, 0.9);
-	transition: background 0.3s;
+	transition: background 0.3s, opacity 0.3s;
 
 	&[aria-selected='true'] {
 		background: colors.$pink;
 	}
 
-	&:hover {
+	&[aria-selected='false']:hover {
 		background: transparentize(white, 0.8);
 	}
 }
 
 .roleIcon {
-	flex-shrink: 0;
 	margin-right: 3px;
 	color: white;
 }
 
 .delete {
-	flex-shrink: 0;
 	margin-right: 3px;
 	font-size: 16px;
 	color: colors.$red;

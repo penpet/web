@@ -32,7 +32,7 @@ router.patch(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const { name } = body
+			const { name } = body as { name: unknown }
 
 			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
 			if (!name) throw new HttpError(400, 'Invalid name')
@@ -94,7 +94,11 @@ router.post(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const { name, email, password } = body
+			const { name, email, password } = body as {
+				name: unknown
+				email: unknown
+				password: unknown
+			}
 
 			if (
 				!(

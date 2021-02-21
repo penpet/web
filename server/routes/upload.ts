@@ -25,7 +25,10 @@ router.post(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const { name, type } = body
+			const { name, type } = body as {
+				name: unknown
+				type: unknown
+			}
 
 			if (!(typeof name === 'string' && typeof type === 'string'))
 				throw new HttpError(400, 'Invalid body')
