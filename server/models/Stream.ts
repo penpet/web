@@ -1,6 +1,8 @@
 import { Duplex } from 'stream'
 import WebSocket from 'ws'
 
+import { isOpen } from '../utils/socket'
+
 export default class Stream extends Duplex {
 	constructor(private readonly socket: WebSocket, readonly = false) {
 		super({ objectMode: true })
@@ -36,10 +38,7 @@ export default class Stream extends Duplex {
 	}
 
 	private readonly close = () => {
-		const { socket } = this
-		const { readyState, CONNECTING, OPEN } = socket
-
-		if (readyState === CONNECTING || readyState === OPEN) socket.close()
+		if (isOpen(this.socket)) this.socket.close()
 	}
 
 	readonly _read = () => {

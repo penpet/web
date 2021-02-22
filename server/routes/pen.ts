@@ -17,6 +17,7 @@ import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
 import { useClient } from '../database'
 import { PING_INTERVAL } from '../constants'
+import { isOpen, ping } from '../utils/socket'
 
 const router = Router()
 
@@ -62,20 +63,24 @@ router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
 
 		await edit(socket, id, role)
 
-		const ping = setInterval(() => {
-			const { readyState, CONNECTING, OPEN } = socket
+		ping(socket)
+	} catch {
+		if (isOpen(socket)) socket.close()
+	}
+})
 
-			readyState === CONNECTING || readyState === OPEN
-				? socket.ping()
-				: clearInterval(ping)
-		}, PING_INTERVAL)
+router.ws('/pens/:id/cursors', async (socket, { params: { id }, user }) => {
+	try {
+		if (typeof id !== 'string') throw new Error('Invalid ID')
 
-		socket.on('close', () => {
-			clearInterval(ping)
-		})
-	} catch (error) {
-		const { readyState, CONNECTING, OPEN } = socket
-		if (readyState === CONNECTING || readyState === OPEN) socket.close()
+		const role = await useClient(client =>
+			getRole(client, (user as Pal | undefined)?.id, id)
+		)
+		if (!role) throw new Error('Private pen')
+
+		ping(socket)
+	} catch {
+		if (isOpen(socket)) socket.close()
 	}
 })
 
