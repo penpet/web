@@ -9,6 +9,7 @@ export const ROOT = join(__dirname, '..')
 export const PORT = process.env.PORT ?? '5000'
 
 export const ORIGIN = DEV ? `http://localhost:${PORT}` : PUBLIC_ORIGIN
+export const SOCKET_ORIGIN = ORIGIN.replace(/^http/, 'ws')
 
 export const ID_LENGTH = 10
 

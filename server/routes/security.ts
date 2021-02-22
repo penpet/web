@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { getCSP, SELF, INLINE, EVAL, DATA } from 'csp-header'
 
-import { DEV, ORIGIN } from '../constants'
+import { DEV, ORIGIN, SOCKET_ORIGIN } from '../constants'
 
 const router = Router()
 
@@ -26,6 +26,7 @@ router.use((_req, res, next) => {
 				'default-src': [SELF],
 				'connect-src': [
 					SELF,
+					SOCKET_ORIGIN,
 					`https://s3.amazonaws.com/${process.env.AWS_S3_BUCKET}`
 				],
 				'style-src': [SELF, INLINE],
