@@ -131,6 +131,30 @@ export const editPenName = async (
 	)
 }
 
+export const editPublicRole = async (
+	client: PoolClient,
+	pal: Pal,
+	penId: string,
+	newRole: PublicRole | null
+) => {
+	const role = await getPrivateRole(client, pal.id, penId)
+
+	if (role !== Role.Owner)
+		throw new HttpError(
+			403,
+			'You must be the owner of this pen to change link permissions'
+		)
+
+	await client.query<Record<string, never>, [string, PublicRole | null]>(
+		`
+		UPDATE pens
+		SET role = $2
+		WHERE id = $1
+		`,
+		[penId, newRole]
+	)
+}
+
 export const deletePen = async (
 	client: PoolClient,
 	pal: Pal,

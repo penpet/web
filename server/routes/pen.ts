@@ -7,9 +7,10 @@ import {
 	getPen,
 	createPen,
 	editPenName,
+	editPublicRole,
 	deletePen
 } from '../models/Pen'
-import { getRole } from '../models/Role'
+import { PublicRole, getRole } from '../models/Role'
 import edit from '../models/Editor'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
@@ -61,7 +62,11 @@ router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
 		await edit(socket, id, role)
 
 		const ping = setInterval(() => {
-			socket.ping()
+			const { readyState, CONNECTING, OPEN } = socket
+
+			readyState === CONNECTING || readyState === OPEN
+				? socket.ping()
+				: clearInterval(ping)
 		}, 5000)
 
 		socket.on('close', () => {
@@ -104,16 +109,32 @@ router.patch(
 			)
 				throw new HttpError(400, 'Invalid body')
 
-			const { name } = body as { name: unknown }
+			const { name, role } = body as {
+				name: unknown
+				role: unknown
+			}
 
-			if (typeof name !== 'string') throw new HttpError(400, 'Invalid body')
-			if (!name) throw new HttpError(400, 'Invalid name')
+			if (typeof name === 'string') {
+				await useClient(async client => {
+					await editPenName(client, user as Pal, id, name)
+				})
 
-			await useClient(async client => {
-				await editPenName(client, user as Pal, id, name)
-			})
+				return res.send()
+			}
 
-			res.send()
+			if (
+				role === null ||
+				role === PublicRole.Viewer ||
+				role === PublicRole.Editor
+			) {
+				await useClient(async client => {
+					await editPublicRole(client, user as Pal, id, role)
+				})
+
+				return res.send()
+			}
+
+			throw new HttpError(400, 'Invalid body')
 		} catch (error) {
 			sendError(res, error, 500)
 		}

@@ -12,6 +12,8 @@ import {
 
 import Pen from 'models/Pen'
 import Role, { PublicRole } from 'models/Role'
+import editPublicRole from 'lib/editPublicRole'
+import handleError from 'lib/handleError'
 import { ORIGIN } from 'lib/constants'
 
 import styles from './index.module.scss'
@@ -23,12 +25,26 @@ export interface PenLinkProps {
 const PenLink = ({ pen }: PenLinkProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 
-	const role = pen.public_role
+	const { id, public_role: role } = pen
+	const isOwner = pen.role === Role.Owner
+
 	const isDisabled = !role
 
-	const setRole = useCallback((role: PublicRole | null) => {
-		console.log(`Set role to ${role}`)
-	}, [])
+	const setRole = useCallback(
+		async (role: PublicRole | null) => {
+			if (!isOwner || isLoading) return
+
+			try {
+				setIsLoading(true)
+				await editPublicRole(id, role)
+			} catch (error) {
+				handleError(error)
+			} finally {
+				setIsLoading(false)
+			}
+		},
+		[id, isOwner, isLoading, setIsLoading]
+	)
 
 	const none = useCallback(() => setRole(null), [setRole])
 	const view = useCallback(() => setRole(PublicRole.Viewer), [setRole])
@@ -51,7 +67,7 @@ const PenLink = ({ pen }: PenLinkProps) => {
 					<FontAwesomeIcon className={styles.icon} icon={faLink} />
 					link
 				</label>
-				{pen.role === Role.Owner ? (
+				{isOwner ? (
 					<div className={styles.roles}>
 						<button
 							className={styles.role}
