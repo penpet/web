@@ -11,3 +11,5 @@ export const PORT = process.env.PORT ?? '5000'
 export const ORIGIN = DEV ? `http://localhost:${PORT}` : PUBLIC_ORIGIN
 
 export const ID_LENGTH = 10
+
+export const PING_INTERVAL = 5000

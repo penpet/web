@@ -16,6 +16,7 @@ import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
 import { useClient } from '../database'
+import { PING_INTERVAL } from '../constants'
 
 const router = Router()
 
@@ -67,7 +68,7 @@ router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
 			readyState === CONNECTING || readyState === OPEN
 				? socket.ping()
 				: clearInterval(ping)
-		}, 5000)
+		}, PING_INTERVAL)
 
 		socket.on('close', () => {
 			clearInterval(ping)
