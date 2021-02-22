@@ -1,4 +1,11 @@
-import { FormEvent, ChangeEvent, useState, useCallback } from 'react'
+import {
+	FormEvent,
+	ChangeEvent,
+	useRef,
+	useState,
+	useCallback,
+	useEffect
+} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faEdit,
@@ -21,6 +28,8 @@ export interface PenPageInviteProps {
 }
 
 const PenPageInvite = ({ pen, isShowing }: PenPageInviteProps) => {
+	const emailRef = useRef<HTMLInputElement | null>(null)
+
 	const [email, setEmail] = useState('')
 	const [role, setRole] = useState(Role.Editor)
 
@@ -61,9 +70,14 @@ const PenPageInvite = ({ pen, isShowing }: PenPageInviteProps) => {
 		setRole(Role.Editor)
 	}, [setRole])
 
+	useEffect(() => {
+		emailRef.current?.focus()
+	}, [emailRef])
+
 	return (
 		<form className={styles.root} onSubmit={onSubmit}>
 			<input
+				ref={emailRef}
 				className={styles.email}
 				type="email"
 				autoComplete={isShowing ? 'email' : 'off'}

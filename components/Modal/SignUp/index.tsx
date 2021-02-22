@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from 'react'
+import { ChangeEvent, useRef, useState, useCallback, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 
 import Pal from 'models/Pal'
@@ -10,6 +10,8 @@ import Modal from '../Auth'
 import styles from './index.module.scss'
 
 const SignUpModal = () => {
+	const nameRef = useRef<HTMLInputElement | null>(null)
+
 	const [isShowing, setIsShowing] = useRecoilState(signUpModalState)
 	const [{ name, email, password }, setState] = useRecoilState(authState)
 
@@ -59,6 +61,10 @@ const SignUpModal = () => {
 		[setState]
 	)
 
+	useEffect(() => {
+		nameRef.current?.focus()
+	}, [nameRef])
+
 	return (
 		<Modal
 			className={styles.root}
@@ -72,6 +78,7 @@ const SignUpModal = () => {
 		>
 			<label htmlFor="sign-up-modal-name-input">name</label>
 			<input
+				ref={nameRef}
 				id="sign-up-modal-name-input"
 				autoComplete={isShowing ? 'name' : 'off'}
 				placeholder="John Smith"

@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from 'react'
+import { ChangeEvent, useRef, useState, useCallback, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 
 import Pal from 'models/Pal'
@@ -10,6 +10,8 @@ import Modal from '../Auth'
 import styles from './index.module.scss'
 
 const LogInModal = () => {
+	const emailRef = useRef<HTMLInputElement | null>(null)
+
 	const [isShowing, setIsShowing] = useRecoilState(logInModalState)
 	const [{ email, password }, setState] = useRecoilState(authState)
 
@@ -52,6 +54,10 @@ const LogInModal = () => {
 		[setState]
 	)
 
+	useEffect(() => {
+		emailRef.current?.focus()
+	}, [emailRef])
+
 	return (
 		<Modal
 			className={styles.root}
@@ -65,6 +71,7 @@ const LogInModal = () => {
 		>
 			<label htmlFor="log-in-modal-email-input">email</label>
 			<input
+				ref={emailRef}
 				id="log-in-modal-email-input"
 				type="email"
 				autoComplete={isShowing ? 'email' : 'off'}

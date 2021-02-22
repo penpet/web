@@ -93,6 +93,10 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 			quill.on('text-change', onTextChange)
 			doc.on('op', onOperation)
 
+			requestAnimationFrame(() => {
+				quill?.focus()
+			})
+
 			setIsLoading(false)
 		})
 
@@ -107,7 +111,7 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 	}, [id, readonly, toolbarRef, contentRef, uploadImage, setIsLoading])
 
 	return (
-		<div key={`${id}:${role}`} className={styles.root} aria-busy={isLoading}>
+		<div key={`${id}/${role}`} className={styles.root} aria-busy={isLoading}>
 			<div className={styles.toolbar} ref={toolbarRef}>
 				<span className="ql-formats">
 					<select className="ql-size" />
