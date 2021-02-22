@@ -51,7 +51,7 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 		const toolbar = toolbarRef.current
 		const content = contentRef.current
 
-		if (!(id && toolbar && content)) return
+		if (!(toolbar && content)) return
 
 		setIsLoading(true)
 
@@ -61,7 +61,7 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 		let doc: Doc | null = connection.get('pens', id)
 		let quill: Quill | null = null
 
-		const onTextChange: TextChangeHandler = (delta, _oldDelta, source) => {
+		const onTextChange: TextChangeHandler = (delta, _previous, source) => {
 			if (!doc || source !== 'user') return
 			doc.submitOp(delta, { source: quill })
 		}
@@ -107,7 +107,7 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 	}, [id, readonly, toolbarRef, contentRef, uploadImage, setIsLoading])
 
 	return (
-		<div key={id} className={styles.root} aria-busy={isLoading}>
+		<div key={`${id}:${role}`} className={styles.root} aria-busy={isLoading}>
 			<div className={styles.toolbar} ref={toolbarRef}>
 				<span className="ql-formats">
 					<select className="ql-size" />
