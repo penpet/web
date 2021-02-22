@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import copy from 'copy-to-clipboard'
 
 import Pen from 'models/Pen'
+import usePal from 'hooks/usePal'
 import { ORIGIN } from 'lib/constants'
 import EditName from '../EditName'
 import Options from '../Options'
@@ -16,6 +17,8 @@ export interface PenPageNavbarProps {
 }
 
 const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
+	const isAuthorized = Boolean(usePal())
+
 	const [isLoading, setIsLoading] = useState(false)
 	const [isEditingName, setIsEditingName] = useState(false)
 
@@ -38,7 +41,6 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 			<div className={styles.root}>
 				{isEditingName ? (
 					<EditName
-						className={styles.editName}
 						pen={pen}
 						setIsShowing={setIsEditingName}
 						isLoading={isLoading}
@@ -57,9 +59,9 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 				)}
 				{isLoading ? (
 					<Spinner className={styles.spinner} />
-				) : (
+				) : isAuthorized ? (
 					<Options pen={pen} editName={editName} />
-				)}
+				) : null}
 			</div>
 			<Pals pen={pen} />
 		</>

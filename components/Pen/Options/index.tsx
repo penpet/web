@@ -5,6 +5,8 @@ import Dropdown from 'components/Dropdown'
 import Trigger, { triggerClassName } from './Trigger'
 import Content, { contentClassName } from './Content'
 
+import styles from './index.module.scss'
+
 export interface PenOptionsProps {
 	pen: Pen
 	editName(): void
@@ -15,6 +17,7 @@ const PenOptions = ({ pen, editName }: PenOptionsProps) => {
 
 	return (
 		<Dropdown
+			className={styles.root}
 			triggerClassName={triggerClassName}
 			contentClassName={contentClassName}
 			trigger={<Trigger />}

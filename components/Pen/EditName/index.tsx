@@ -6,7 +6,6 @@ import {
 	useCallback,
 	useEffect
 } from 'react'
-import cx from 'classnames'
 
 import Pen from 'models/Pen'
 import editPenName from 'lib/editPenName'
@@ -15,7 +14,6 @@ import handleError from 'lib/handleError'
 import styles from './index.module.scss'
 
 export interface PenEditNameProps {
-	className?: string
 	pen: Pen
 	setIsShowing(isShowing: boolean): void
 	isLoading: boolean
@@ -23,7 +21,6 @@ export interface PenEditNameProps {
 }
 
 const PenEditName = ({
-	className,
 	pen,
 	setIsShowing,
 	isLoading,
@@ -80,7 +77,7 @@ const PenEditName = ({
 	}, [input])
 
 	return (
-		<form className={cx(styles.root, className)} onSubmit={onSubmit}>
+		<form className={styles.root} onSubmit={onSubmit}>
 			<input
 				ref={input}
 				className={styles.input}

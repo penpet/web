@@ -3,8 +3,9 @@
 .root {
 	display: flex;
 	align-items: center;
+	height: 35px;
 	margin-right: 16px;
-	padding: 8px 12px;
+	padding: 0 12px;
 	font-size: 16px;
 	color: white;
 	background: colors.$pink;
