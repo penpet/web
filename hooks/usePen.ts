@@ -1,4 +1,5 @@
-import useSWR from 'swr'
+import { useEffect } from 'react'
+import useSWR, { mutate } from 'swr'
 
 import { PenData } from 'models/Pen'
 import HttpError from 'models/HttpError'
@@ -9,6 +10,17 @@ const usePen = (id: string | undefined) => {
 		id ? `pens/${id}` : null,
 		fetch
 	)
+
+	useEffect(() => {
+		if (!data) return
+
+		mutate(
+			'pens',
+			(pens: PenData[] | undefined) =>
+				pens?.map(pen => (pen.id === id ? data : pen)),
+			false
+		)
+	}, [data])
 
 	return error
 		? error instanceof HttpError

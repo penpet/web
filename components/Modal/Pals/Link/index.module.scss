@@ -33,7 +33,11 @@
 	height: $dimension;
 	color: white;
 	background: transparentize(white, 0.9);
-	transition: background 0.3s;
+	transition: background 0.3s, opacity 0.3s;
+
+	&:disabled {
+		opacity: 0.5;
+	}
 
 	&[aria-selected='true'] {
 		background: colors.$pink;
