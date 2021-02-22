@@ -23,6 +23,19 @@ export const combineRole = (
 	publicRole: PublicRole | null | undefined
 ) => (role ?? publicRole ?? null) as Role | null
 
+export const serializeRole = (role: Role | PublicRole | null | undefined) => {
+	switch (role) {
+		case Role.Owner:
+			return 3
+		case Role.Editor:
+			return 2
+		case Role.Viewer:
+			return 1
+		default:
+			return 0
+	}
+}
+
 export const getRoles = async (
 	client: PoolClient,
 	role: Role | null,

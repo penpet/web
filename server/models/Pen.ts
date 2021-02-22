@@ -5,7 +5,8 @@ import Role, {
 	PublicRole,
 	createRole,
 	combineRole,
-	getPrivateRole
+	getPrivateRole,
+	serializeRole
 } from './Role'
 import HttpError from '../utils/HttpError'
 import newId from '../utils/newId'
@@ -81,6 +82,26 @@ export const getPen = async (
 
 	const pen = pens[0]
 	if (!pen) throw new HttpError(404, 'Pen not found')
+
+	if (pal && serializeRole(pen.role) < serializeRole(pen.public_role)) {
+		const role = (pen.public_role as unknown) as Role
+
+		await client.query<Record<string, never>, [string, string, Role]>(
+			pen.role
+				? `
+				UPDATE roles
+				SET role = $3
+				WHERE pal_id = $1 AND pen_id = $2
+				`
+				: `
+				INSERT INTO roles (pal_id, pen_id, role)
+				VALUES ($1, $2, $3)
+				`,
+			[pal.id, pen.id, role]
+		)
+
+		return { ...pen, role }
+	}
 
 	const role = combineRole(pen.role, pen.public_role)
 	if (!role) throw new HttpError(401, 'Private pen')
