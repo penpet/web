@@ -108,6 +108,7 @@ const PenLink = ({ pen }: PenLinkProps) => {
 				<input
 					id="pals-modal-pen-link-input"
 					className={styles.link}
+					autoComplete="off"
 					readOnly
 					disabled={isDisabled}
 					value={`${ORIGIN}/${pen.id}`}

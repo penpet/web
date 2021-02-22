@@ -17,9 +17,10 @@ import styles from './index.module.scss'
 
 export interface ProfileEditNameProps {
 	pal: Pal
+	isShowing: boolean
 }
 
-const ProfileEditName = ({ pal }: ProfileEditNameProps) => {
+const ProfileEditName = ({ pal, isShowing }: ProfileEditNameProps) => {
 	const input = useRef<HTMLInputElement | null>(null)
 
 	const currentName = pal.name
@@ -74,6 +75,8 @@ const ProfileEditName = ({ pal }: ProfileEditNameProps) => {
 				ref={input}
 				id="profile-dropdown-name-input"
 				className={styles.input}
+				type="name"
+				autoComplete={isShowing ? 'name' : 'off'}
 				placeholder={currentName}
 				disabled={isLoading}
 				value={name}

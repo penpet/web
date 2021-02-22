@@ -73,7 +73,7 @@ const SignUpModal = () => {
 			<label htmlFor="sign-up-modal-name-input">name</label>
 			<input
 				id="sign-up-modal-name-input"
-				autoComplete="name"
+				autoComplete={isShowing ? 'name' : 'off'}
 				placeholder="John Smith"
 				value={name}
 				onChange={onNameChange}
@@ -82,7 +82,7 @@ const SignUpModal = () => {
 			<input
 				id="sign-up-modal-email-input"
 				type="email"
-				autoComplete="email"
+				autoComplete={isShowing ? 'email' : 'off'}
 				placeholder="name@example.com"
 				value={email}
 				onChange={onEmailChange}
@@ -91,7 +91,7 @@ const SignUpModal = () => {
 			<input
 				id="sign-up-modal-password-input"
 				type="password"
-				autoComplete="new-password"
+				autoComplete={isShowing ? 'new-password' : 'off'}
 				placeholder="••••••"
 				value={password}
 				onChange={onPasswordChange}

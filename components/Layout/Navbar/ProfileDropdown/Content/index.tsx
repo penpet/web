@@ -15,9 +15,13 @@ import styles from './index.module.scss'
 
 export interface ProfileDropdownContentProps {
 	pal: Pal
+	isShowing: boolean
 }
 
-const ProfileDropdownContent = ({ pal }: ProfileDropdownContentProps) => {
+const ProfileDropdownContent = ({
+	pal,
+	isShowing
+}: ProfileDropdownContentProps) => {
 	const reload = useReload()
 	const [isSignOutLoading, setIsSignOutLoading] = useState(false)
 
@@ -37,7 +41,7 @@ const ProfileDropdownContent = ({ pal }: ProfileDropdownContentProps) => {
 
 	return (
 		<>
-			<EditName pal={pal} />
+			<EditName pal={pal} isShowing={isShowing} />
 			<Email pal={pal} />
 			<button
 				className={styles.signOut}

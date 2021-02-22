@@ -17,9 +17,10 @@ import styles from './index.module.scss'
 
 export interface PenPageInviteProps {
 	pen: Pen
+	isShowing: boolean
 }
 
-const PenPageInvite = ({ pen }: PenPageInviteProps) => {
+const PenPageInvite = ({ pen, isShowing }: PenPageInviteProps) => {
 	const [email, setEmail] = useState('')
 	const [role, setRole] = useState(Role.Editor)
 
@@ -65,6 +66,7 @@ const PenPageInvite = ({ pen }: PenPageInviteProps) => {
 			<input
 				className={styles.email}
 				type="email"
+				autoComplete={isShowing ? 'email' : 'off'}
 				placeholder="email"
 				value={email}
 				onChange={onEmailChange}

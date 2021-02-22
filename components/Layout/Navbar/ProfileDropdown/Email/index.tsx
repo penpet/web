@@ -16,6 +16,7 @@ const ProfileEmail = ({ pal }: ProfileEmailProps) => (
 			className={styles.value}
 			readOnly
 			type="email"
+			autoComplete="off"
 			value={pal.email}
 		/>
 	</div>

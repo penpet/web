@@ -67,7 +67,7 @@ const LogInModal = () => {
 			<input
 				id="log-in-modal-email-input"
 				type="email"
-				autoComplete="email"
+				autoComplete={isShowing ? 'email' : 'off'}
 				placeholder="name@example.com"
 				value={email}
 				onChange={onEmailChange}
@@ -76,7 +76,7 @@ const LogInModal = () => {
 			<input
 				id="log-in-modal-password-input"
 				type="password"
-				autoComplete="current-password"
+				autoComplete={isShowing ? 'current-password' : 'off'}
 				placeholder="••••••"
 				value={password}
 				onChange={onPasswordChange}

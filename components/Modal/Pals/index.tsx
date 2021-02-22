@@ -28,7 +28,7 @@ const PalsModal = ({ pen, isShowing, setIsShowing }: PalsModalProps) => {
 			<div className={styles.content}>
 				{pals ? (
 					<>
-						{isOwner && <Invite pen={pen} />}
+						{isOwner && <Invite pen={pen} isShowing={isShowing} />}
 						<div className={styles.pals}>
 							{pals.map(pal => (
 								<Row key={pal.id} pal={pal} pen={pen} />
