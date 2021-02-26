@@ -204,4 +204,20 @@ $selected: colors.$pink;
 		border: 1px solid colors.$border;
 		border-radius: 8px !important;
 	}
+
+	.ql-cursor-caret-container:hover > .ql-cursor-caret {
+		border-radius: 0 0 1px 1px !important;
+	}
+
+	.ql-cursor-caret {
+		border-radius: 1px !important;
+		transition: border-radius 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+	}
+
+	.ql-cursor-flag {
+		pointer-events: none !important;
+		visibility: visible !important;
+		border-radius: 4px 4px 4px 0 !important;
+		transition: opacity 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+	}
 }
