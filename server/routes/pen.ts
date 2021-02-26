@@ -12,12 +12,12 @@ import {
 } from '../models/Pen'
 import { PublicRole, getRole } from '../models/Role'
 import edit from '../models/Editor'
+import Cursors from '../models/Cursors'
 import HttpError from '../utils/HttpError'
 import sendError from '../utils/sendError'
 import { assertAuthenticated } from '../utils/assert'
-import { useClient } from '../database'
-import { PING_INTERVAL } from '../constants'
 import { isOpen, ping } from '../utils/socket'
+import { useClient } from '../database'
 
 const router = Router()
 
@@ -52,16 +52,16 @@ router.get(
 	}
 )
 
-router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
+router.ws('/pens/:id', async (socket, { params: { id: penId }, user }) => {
 	try {
-		if (typeof id !== 'string') throw new Error('Invalid ID')
+		if (typeof penId !== 'string') throw new Error('Invalid ID')
 
 		const role = await useClient(client =>
-			getRole(client, (user as Pal | undefined)?.id, id)
+			getRole(client, (user as Pal | undefined)?.id, penId)
 		)
 		if (!role) throw new Error('Private pen')
 
-		await edit(socket, id, role)
+		await edit(socket, penId, role)
 
 		ping(socket)
 	} catch {
@@ -69,20 +69,26 @@ router.ws('/pens/:id', async (socket, { params: { id }, user }) => {
 	}
 })
 
-router.ws('/pens/:id/cursors', async (socket, { params: { id }, user }) => {
-	try {
-		if (typeof id !== 'string') throw new Error('Invalid ID')
+router.ws(
+	'/pens/:id/cursors',
+	async (socket, { params: { id: penId }, user }) => {
+		try {
+			if (typeof penId !== 'string') throw new Error('Invalid ID')
 
-		const role = await useClient(client =>
-			getRole(client, (user as Pal | undefined)?.id, id)
-		)
-		if (!role) throw new Error('Private pen')
+			const role = await useClient(client =>
+				getRole(client, (user as Pal | undefined)?.id, penId)
+			)
+			if (!role) throw new Error('Private pen')
 
-		ping(socket)
-	} catch {
-		if (isOpen(socket)) socket.close()
+			const cursors = new Cursors(penId)
+
+			cursors.subscribe(socket, user as Pal | undefined)
+			ping(socket)
+		} catch {
+			if (isOpen(socket)) socket.close()
+		}
 	}
-})
+)
 
 router.post(
 	'/pens',

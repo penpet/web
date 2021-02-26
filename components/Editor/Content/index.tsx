@@ -1,22 +1,27 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
+import ReconnectingWebSocket from 'reconnecting-websocket'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
-import Quill, { TextChangeHandler } from 'quill'
-import UploadImage from 'quill-upload-image'
+import Quill, { TextChangeHandler, SelectionChangeHandler } from 'quill'
+import QuillCursors from 'quill-cursors'
+import QuillUploadImage from 'quill-upload-image'
 import katex from 'katex'
 
 import Pen from 'models/Pen'
+import Role from 'models/Role'
+import Cursors from 'models/Cursors'
 import upload from 'lib/upload'
 import { SOCKET_ORIGIN } from 'lib/constants'
 import handleError from 'lib/handleError'
-import Spinner from 'components/Spinner'
 import UploadModal from 'components/Modal/Upload'
+import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
-import Role from 'models/Role'
 
 ShareDB.types.register(richText.type)
-Quill.register('modules/uploadImage', UploadImage)
+
+Quill.register('modules/cursors', QuillCursors)
+Quill.register('modules/uploadImage', QuillUploadImage)
 
 export interface EditorContentProps {
 	pen: Pen
@@ -55,20 +60,43 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 
 		setIsLoading(true)
 
-		const socket = new WebSocket(`${SOCKET_ORIGIN}/pens/${id}`)
+		const socket = new ReconnectingWebSocket(`${SOCKET_ORIGIN}/pens/${id}`)
 		const connection = new ShareDB.Connection(socket as never)
 
 		let doc: Doc | null = connection.get('pens', id)
-		let quill: Quill | null = null
 
-		const onTextChange: TextChangeHandler = (delta, _previous, source) => {
-			if (!doc || source !== 'user') return
-			doc.submitOp(delta, { source: quill })
+		let quill: Quill | null = null
+		let cursors: Cursors | null = null
+
+		const onTextChange: TextChangeHandler = (delta, _oldDelta, source) => {
+			if (!(doc && quill && cursors && source === 'user')) return
+
+			doc.submitOp(delta, { source: quill }, error => {
+				if (error) handleError(error)
+			})
+
+			const didFormat = delta.reduce(
+				(format, op) => (op.insert || op.delete ? false : format),
+				true
+			)
+
+			if (!didFormat) cursors.update()
+		}
+
+		const onSelectionChange: SelectionChangeHandler = (
+			range,
+			_oldRange,
+			source
+		) => {
+			if (!(cursors && source === 'user')) return
+			cursors.update(range)
 		}
 
 		const onOperation = (operation: unknown, source: unknown) => {
-			if (!quill || source === quill) return
+			if (!(quill && cursors) || source === quill) return
+
 			quill.updateContents(operation as never)
+			cursors.update()
 		}
 
 		doc.subscribe(error => {
@@ -81,6 +109,9 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 				placeholder: 'Write anything!',
 				modules: {
 					toolbar,
+					cursors: {
+						autoRegisterListener: false
+					},
 					uploadImage: {
 						upload: uploadImage,
 						onError: handleError
@@ -89,8 +120,11 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 			})
 
 			quill.setContents(doc.data)
+			cursors = new Cursors(id, quill)
 
 			quill.on('text-change', onTextChange)
+			quill.on('selection-change', onSelectionChange)
+
 			doc.on('op', onOperation)
 
 			requestAnimationFrame(() => {
@@ -102,11 +136,14 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 
 		return () => {
 			connection.close()
+			cursors?.close()
+
+			quill?.off('text-change', onTextChange)
+			quill?.off('selection-change', onSelectionChange)
 
 			doc?.off('op', onOperation)
-			quill?.off('text-change', onTextChange)
 
-			doc = quill = null
+			doc = quill = cursors = null
 		}
 	}, [id, readonly, toolbarRef, contentRef, uploadImage, setIsLoading])
 
