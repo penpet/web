@@ -3,6 +3,11 @@
 $dimension: 35px;
 $color: var(--color);
 
+.root,
+.pal {
+	border-radius: $dimension / 2;
+}
+
 .root {
 	display: flex;
 	align-items: center;
@@ -20,7 +25,11 @@ $color: var(--color);
 	color: white;
 	background: $color;
 	box-shadow: 0 0 5px 0 $color;
-	border-radius: $dimension / 2;
+	transition: box-shadow 0.3s;
+
+	.root:hover &:not(:hover) {
+		box-shadow: none;
+	}
 
 	& + & {
 		margin-left: -$dimension / 3;
