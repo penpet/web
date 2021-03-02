@@ -1,0 +1,37 @@
+@use 'styles/spinner';
+
+$dimension: 35px;
+$color: var(--color);
+
+.root {
+	display: flex;
+	align-items: center;
+	margin-right: 16px;
+}
+
+.pal {
+	cursor: default !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: $dimension;
+	height: $dimension;
+	line-height: 1.15;
+	color: white;
+	background: $color;
+	box-shadow: 0 0 5px 0 $color;
+	border-radius: $dimension / 2;
+
+	& + & {
+		margin-left: -$dimension / 3;
+	}
+}
+
+.spinner {
+	$spinner-dimension: 18px;
+	$spinner-border: 3px;
+
+	@include spinner.options($spinner-dimension, $spinner-border, white);
+
+	margin: ($dimension - $spinner-dimension - $spinner-border * 2) / 2;
+}

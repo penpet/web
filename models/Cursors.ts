@@ -1,12 +1,12 @@
+import { SetStateAction } from 'react'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import Quill, { RangeStatic } from 'quill'
 import QuillCursors from 'quill-cursors'
-import debounce from 'lodash/debounce'
 
+import ActivePal from './ActivePal'
 import { isOpen } from 'lib/socket'
 import { SOCKET_ORIGIN } from 'lib/constants'
 import handleError from 'lib/handleError'
-import { toast } from 'react-toastify'
 
 export default class Cursors {
 	private readonly socket: WebSocket
@@ -14,7 +14,11 @@ export default class Cursors {
 
 	private range: RangeStatic | null = null
 
-	constructor(penId: string, private readonly quill: Quill) {
+	constructor(
+		penId: string,
+		private readonly quill: Quill,
+		setActivePals: (activePals: SetStateAction<ActivePal[] | null>) => void
+	) {
 		const url = `${SOCKET_ORIGIN}/pens/${penId}/cursors`
 
 		this.socket = new ReconnectingWebSocket(url) as WebSocket
@@ -33,15 +37,17 @@ export default class Cursors {
 							this.module.moveCursor(cursor.id, cursor.range)
 						}
 
+						setActivePals(cursors)
+
 						break
 					}
 					case CursorEvent.Created: {
-						const { id, name, color, range } = data.cursor as Cursor
+						const cursor = data.cursor as Cursor
 
-						this.module.createCursor(id, name, color)
-						this.module.moveCursor(id, range)
+						this.module.createCursor(cursor.id, cursor.name, cursor.color)
+						this.module.moveCursor(cursor.id, cursor.range)
 
-						toast.dark(`${name} joined`)
+						setActivePals(pals => [cursor, ...(pals ?? [])])
 
 						break
 					}
@@ -52,10 +58,10 @@ export default class Cursors {
 						break
 					}
 					case CursorEvent.Deleted: {
-						const { id, name } = data.cursor as Cursor
+						const { id } = data.cursor as Cursor
 						this.module.removeCursor(id)
 
-						toast.dark(`${name} left`)
+						setActivePals(pals => pals?.filter(pal => pal.id !== id) ?? [])
 
 						break
 					}

@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 import { PenData, penFromData } from 'models/Pen'
 import PenQuery from 'models/PenQuery'
+import ActivePal from 'models/ActivePal'
 import HttpError from 'models/HttpError'
 import getPen from 'lib/getPen'
 import { ORIGIN } from 'lib/constants'
@@ -30,6 +31,8 @@ interface PenPageProps {
 }
 
 const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
+	const [activePals, setActivePals] = useState<ActivePal[] | null>(null)
+
 	const { pen: id } = useRouter().query as PenQuery
 	const penData = usePen(id) ?? initialPenData
 
@@ -42,13 +45,13 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 		typeof penData === 'number' ? getErrorMessage(penData) : null
 
 	return (
-		<Layout navbar={pen && <Navbar pen={pen} />}>
+		<Layout navbar={pen && <Navbar pen={pen} activePals={activePals} />}>
 			<Head
 				url={`${ORIGIN}/${id}`}
 				title={`${pen?.name ?? errorMessage} | penpet`}
 				description="" // TODO: Add description
 			/>
-			{pen && <Editor pen={pen} />}
+			{pen && <Editor pen={pen} setActivePals={setActivePals} />}
 			{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 		</Layout>
 	)

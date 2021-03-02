@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { SetStateAction, useRef, useState, useCallback, useEffect } from 'react'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import ShareDB, { Doc } from 'sharedb/lib/client'
 import richText from 'rich-text'
@@ -8,6 +8,7 @@ import QuillUploadImage from 'quill-upload-image'
 import katex from 'katex'
 
 import Pen from 'models/Pen'
+import ActivePal from 'models/ActivePal'
 import Role from 'models/Role'
 import Cursors from 'models/Cursors'
 import upload from 'lib/upload'
@@ -25,9 +26,10 @@ Quill.register('modules/uploadImage', QuillUploadImage)
 
 export interface EditorContentProps {
 	pen: Pen
+	setActivePals(activePals: SetStateAction<ActivePal[] | null>): void
 }
 
-const EditorContent = ({ pen }: EditorContentProps) => {
+const EditorContent = ({ pen, setActivePals }: EditorContentProps) => {
 	const { id, role } = pen
 	const readonly = role === Role.Viewer
 
@@ -120,7 +122,7 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 			})
 
 			quill.setContents(doc.data)
-			cursors = new Cursors(id, quill)
+			cursors = new Cursors(id, quill, setActivePals)
 
 			quill.on('text-change', onTextChange)
 			quill.on('selection-change', onSelectionChange)
@@ -145,7 +147,15 @@ const EditorContent = ({ pen }: EditorContentProps) => {
 
 			doc = quill = cursors = null
 		}
-	}, [id, readonly, toolbarRef, contentRef, uploadImage, setIsLoading])
+	}, [
+		id,
+		readonly,
+		toolbarRef,
+		contentRef,
+		uploadImage,
+		setActivePals,
+		setIsLoading
+	])
 
 	return (
 		<div key={`${id}/${role}`} className={styles.root} aria-busy={isLoading}>

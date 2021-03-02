@@ -215,9 +215,16 @@ $selected: colors.$pink;
 	}
 
 	.ql-cursor-flag {
+		width: unset !important;
+		padding: 3px 6px !important;
 		pointer-events: none !important;
 		visibility: visible !important;
 		border-radius: 4px 4px 4px 0 !important;
 		transition: opacity 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+	}
+
+	.ql-cursor-name {
+		margin: 0 !important;
+		font-size: 13px !important;
 	}
 }

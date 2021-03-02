@@ -25,7 +25,6 @@
 		"express-ws": "^4.0.0",
 		"javascript-time-ago": "^2.3.4",
 		"katex": "^0.12.0",
-		"lodash": "^4.17.20",
 		"mime": "^2.5.2",
 		"nanoid": "^3.1.20",
 		"next": "^10.0.7",

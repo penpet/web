@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import copy from 'copy-to-clipboard'
 
 import Pen from 'models/Pen'
+import ActivePal from 'models/ActivePal'
 import usePal from 'hooks/usePal'
 import { ORIGIN } from 'lib/constants'
 import EditName from '../EditName'
@@ -11,12 +12,14 @@ import Pals from '../Pals'
 import Spinner from 'components/Spinner'
 
 import styles from './index.module.scss'
+import ActivePals from '../ActivePals'
 
 export interface PenPageNavbarProps {
 	pen: Pen
+	activePals: ActivePal[] | null
 }
 
-const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
+const PenPageNavbar = ({ pen, activePals }: PenPageNavbarProps) => {
 	const isAuthorized = Boolean(usePal())
 
 	const [isLoading, setIsLoading] = useState(false)
@@ -63,6 +66,7 @@ const PenPageNavbar = ({ pen }: PenPageNavbarProps) => {
 					<Options pen={pen} editName={editName} />
 				) : null}
 			</div>
+			<ActivePals pals={activePals} />
 			<Pals pen={pen} />
 		</>
 	)
