@@ -41,6 +41,7 @@ const PenOptionsContent = ({
 
 	const deleteRole = useCallback(async () => {
 		if (isOwner || isDeleteRoleLoading) return
+		if (!confirm('Are you sure you want to forget this pen?')) return
 
 		try {
 			setIsDeleteRoleLoading(true)
