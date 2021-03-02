@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import cx from 'classnames'
 
 import Pen from 'models/Pen'
 import Dropdown from 'components/Dropdown'
@@ -8,16 +9,17 @@ import Content, { contentClassName } from './Content'
 import styles from './index.module.scss'
 
 export interface PenOptionsProps {
+	className?: string
 	pen: Pen
 	editName(): void
 }
 
-const PenOptions = ({ pen, editName }: PenOptionsProps) => {
+const PenOptions = ({ className, pen, editName }: PenOptionsProps) => {
 	const [isShowing, setIsShowing] = useState(false)
 
 	return (
 		<Dropdown
-			className={styles.root}
+			className={cx(styles.root, className)}
 			triggerClassName={triggerClassName}
 			contentClassName={contentClassName}
 			trigger={<Trigger />}

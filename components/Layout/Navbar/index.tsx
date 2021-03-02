@@ -33,7 +33,7 @@ const Navbar = ({ items }: NavbarProps) => {
 			</Link>
 			<div className={styles.items}>{items}</div>
 			{pal ? (
-				<ProfileDropdown pal={pal} />
+				<ProfileDropdown className={styles.profile} pal={pal} />
 			) : (
 				<>
 					<button className={styles.logIn} onClick={showLogInModal}>

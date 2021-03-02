@@ -1,5 +1,12 @@
 @use 'styles/spinner';
 
+.spinner,
+.options,
+.activePals,
+.pals {
+	flex-shrink: 0;
+}
+
 .root {
 	display: flex;
 	align-items: center;
@@ -8,6 +15,10 @@
 }
 
 .name {
+	max-width: 500px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	text-decoration: none;
 	font-size: 20px;
 	font-weight: 900;

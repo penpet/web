@@ -63,11 +63,11 @@ const PenPageNavbar = ({ pen, activePals }: PenPageNavbarProps) => {
 				{isLoading ? (
 					<Spinner className={styles.spinner} />
 				) : isAuthorized ? (
-					<Options pen={pen} editName={editName} />
+					<Options className={styles.options} pen={pen} editName={editName} />
 				) : null}
 			</div>
-			<ActivePals pals={activePals} />
-			<Pals pen={pen} />
+			<ActivePals className={styles.activePals} pals={activePals} />
+			<Pals className={styles.pals} pen={pen} />
 		</>
 	)
 }

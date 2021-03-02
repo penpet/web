@@ -1,3 +1,5 @@
+import cx from 'classnames'
+
 import ActivePal from 'models/ActivePal'
 import getInitials from 'lib/getInitials'
 import Spinner from 'components/Spinner'
@@ -5,12 +7,13 @@ import Spinner from 'components/Spinner'
 import styles from './index.module.scss'
 
 export interface ActivePalsProps {
+	className?: string
 	pals: ActivePal[] | null
 }
 
-const ActivePals = ({ pals }: ActivePalsProps) => {
+const ActivePals = ({ className, pals }: ActivePalsProps) => {
 	return (
-		<div className={styles.root}>
+		<div className={cx(styles.root, className)}>
 			{pals?.map(pal => (
 				<span
 					key={pal.id}
