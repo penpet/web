@@ -164,7 +164,6 @@ const EditorContent = ({ pen, setActivePals }: EditorContentProps) => {
 					<select className="ql-size" />
 				</span>
 				<span className="ql-formats">
-					<button className="ql-bold" />
 					<button className="ql-italic" />
 					<button className="ql-underline" />
 					<button className="ql-strike" />
