@@ -37,12 +37,12 @@ router.get(
 router.get(
 	'/pens/:id',
 	rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }),
-	async ({ params: { id }, user }, res) => {
+	async ({ params: { id }, query: { preview }, user }, res) => {
 		try {
 			if (typeof id !== 'string') throw new HttpError(400, 'Invalid ID')
 
 			const pen = await useClient(client =>
-				getPen(client, user as Pal | undefined, id)
+				getPen(client, user as Pal | undefined, id, preview === '1')
 			)
 
 			res.send(pen)

@@ -8,6 +8,7 @@ import Role, {
 	getPrivateRole,
 	serializeRole
 } from './Role'
+import getPreview, { Delta } from './Preview'
 import HttpError from '../utils/HttpError'
 import newId from '../utils/newId'
 
@@ -17,6 +18,7 @@ export interface PenData {
 	public_role: PublicRole | null
 	created: string
 	updated: string
+	preview?: string
 }
 
 export default interface Pen extends PenData {
@@ -46,42 +48,37 @@ export const getPens = async (client: PoolClient, pal: Pal) => {
 export const getPen = async (
 	client: PoolClient,
 	pal: Pal | undefined,
-	id: string
+	id: string,
+	includePreview = false
 ): Promise<Pen> => {
 	const { rows: pens } = await client.query<
-		PenData & { role?: Role | null },
+		Omit<PenData, 'preview'> & { role?: Role | null; preview?: Delta },
 		[string, string] | [string]
 	>(
-		pal
-			? `
-			SELECT
-				pens.id,
-				pens.name,
-				pens.role AS public_role,
-				pens.created,
-				pens.updated,
-				roles.role
-			FROM pens
-			LEFT JOIN roles ON
-				roles.pal_id = $1 AND
-				roles.pen_id = pens.id
-			WHERE pens.id = $2
-			`
-			: `
-			SELECT
-				id,
-				name,
-				role AS public_role,
-				created,
-				updated
-			FROM pens
-			WHERE pens.id = $1
-			`,
+		`
+		SELECT
+			pens.id,
+			pens.name,
+			pens.role AS public_role,
+			pens.created,
+			pens.updated
+			${pal ? ', roles.role' : ''}
+			${includePreview ? ', snapshots.data AS preview' : ''}
+		FROM pens
+		${pal ? 'LEFT JOIN roles ON roles.pal_id = $1 AND roles.pen_id = pens.id' : ''}
+		${includePreview ? 'JOIN snapshots ON snapshots.id = pens.id' : ''}
+		WHERE pens.id = ${pal ? '$2' : '$1'}
+		`,
 		pal ? [pal.id, id] : [id]
 	)
 
-	const pen = pens[0]
-	if (!pen) throw new HttpError(404, 'Pen not found')
+	const data = pens[0]
+	if (!data) throw new HttpError(404, 'Pen not found')
+
+	const pen = {
+		...data,
+		preview: data.preview && getPreview(data.preview)
+	}
 
 	if (pal && serializeRole(pen.role) < serializeRole(pen.public_role)) {
 		const role = (pen.public_role as unknown) as Role

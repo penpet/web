@@ -20,16 +20,12 @@ const upload = async (file: File) => {
 
 	const form = new FormData()
 
-	for (const [key, value] of Object.entries(data.fields))
-		form.append(key, value)
+	for (const [name, value] of Object.entries(data.fields))
+		form.append(name, value)
 
 	form.append('file', file)
 
-	const response = await fetch(data.url, {
-		method: 'POST',
-		body: form
-	})
-
+	const response = await fetch(data.url, { method: 'POST', body: form })
 	if (!response.ok) throw new HttpError(response.status, await response.text())
 
 	return url

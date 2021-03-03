@@ -36,7 +36,11 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 		<Layout navbar={pen && <Navbar pen={pen} activePals={activePals} />}>
 			<Head
 				title={`${pen?.name ?? (error ?? UNKNOWN_ERROR).title} | penpet`}
-				description={pen?.name ?? (error ?? UNKNOWN_ERROR).description}
+				description={
+					typeof initialPenData === 'object'
+						? initialPenData.preview || 'This pen is empty'
+						: (error ?? UNKNOWN_ERROR).description
+				}
 			/>
 			{pen ? (
 				<Editor pen={pen} setActivePals={setActivePals} />
@@ -48,15 +52,15 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 }
 
 PenPage.getInitialProps = async context => {
+	const { res } = context
+
 	try {
 		const { pen: id } = context.query
 		if (typeof id !== 'string') throw new HttpError(404, 'Invalid ID')
 
-		return { pen: await getPen(context, id) }
+		return { pen: await getPen(context, id, Boolean(res)) }
 	} catch (error) {
 		const status = error instanceof HttpError ? error.status : 500
-
-		const { res } = context
 		if (res) res.statusCode = status
 
 		return { pen: status }
