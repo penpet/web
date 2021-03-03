@@ -1,6 +1,7 @@
 import { NextPage } from 'next'
 
 import Layout from 'components/Layout'
+import Head from 'components/Head'
 import ErrorMessage from 'components/Error'
 
 export interface ErrorPageProps {
@@ -9,6 +10,10 @@ export interface ErrorPageProps {
 
 const ErrorPage: NextPage<ErrorPageProps> = ({ status }) => (
 	<Layout>
+		<Head
+			title={`Error (${status}) | penpet`}
+			description={`An unknown error occurred (${status})`}
+		/>
 		<ErrorMessage>An unknown error occurred ({status})</ErrorMessage>
 	</Layout>
 )

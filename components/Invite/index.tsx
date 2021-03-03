@@ -11,6 +11,7 @@ import getNameFromEmail from 'lib/getNameFromEmail'
 import authState from 'state/auth'
 import usePal from 'hooks/usePal'
 import Layout from 'components/Layout'
+import Head from 'components/Head'
 import Spinner from 'components/Spinner'
 import Status from './Status'
 
@@ -68,7 +69,13 @@ const InvitePage: NextPage<InvitePageProps> = ({ invite: initialInvite }) => {
 	return (
 		<Layout>
 			{isLoading ? (
-				<Spinner className={styles.spinner} />
+				<>
+					<Head
+						title="Inviting... | penpet"
+						description="You're being invited to the pen"
+					/>
+					<Spinner className={styles.spinner} />
+				</>
 			) : (
 				<Status invite={invite ?? 500} />
 			)}

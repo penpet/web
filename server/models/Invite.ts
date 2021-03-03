@@ -13,6 +13,10 @@ export interface InviteData {
 	role: Role.Viewer | Role.Editor
 }
 
+export interface InviteMeta extends Invite {
+	pen_name: string
+}
+
 export default interface Invite extends InviteData {
 	id: string
 }
@@ -47,15 +51,17 @@ export const getInvites = async (
 }
 
 export const getInvite = async (client: PoolClient, id: string) => {
-	const { rows: invites } = await client.query<Invite, [string]>(
+	const { rows: invites } = await client.query<InviteMeta, [string]>(
 		`
 		SELECT
-			id,
-			pen_id,
-			email,
-			role
+			invites.id,
+			pens.id AS pen_id,
+			pens.name AS pen_name,
+			invites.email,
+			invites.role
 		FROM invites
-		WHERE id = $1
+		JOIN pens ON pens.id = invites.pen_id
+		WHERE invites.id = $1
 		`,
 		[id]
 	)

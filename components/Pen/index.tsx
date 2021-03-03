@@ -6,25 +6,14 @@ import { PenData, penFromData } from 'models/Pen'
 import PenQuery from 'models/PenQuery'
 import ActivePal from 'models/ActivePal'
 import HttpError from 'models/HttpError'
+import getError, { UNKNOWN_ERROR } from './error'
 import getPen from 'lib/getPen'
-import { ORIGIN } from 'lib/constants'
 import usePen from 'hooks/usePen'
 import Layout from 'components/Layout'
 import Navbar from './Navbar'
 import Head from 'components/Head'
 import Editor from 'components/Editor'
 import ErrorMessage from 'components/Error'
-
-const getErrorMessage = (status: number) => {
-	switch (status) {
-		case 401:
-			return 'This pen is private'
-		case 404:
-			return "This pen doesn't exist"
-		default:
-			return 'An unknown error occurred'
-	}
-}
 
 interface PenPageProps {
 	pen: PenData | number
@@ -41,18 +30,19 @@ const PenPage: NextPage<PenPageProps> = ({ pen: initialPenData }) => {
 		[penData]
 	)
 
-	const errorMessage =
-		typeof penData === 'number' ? getErrorMessage(penData) : null
+	const error = typeof penData === 'number' ? getError(penData) : null
 
 	return (
 		<Layout navbar={pen && <Navbar pen={pen} activePals={activePals} />}>
 			<Head
-				url={`${ORIGIN}/${id}`}
-				title={`${pen?.name ?? errorMessage} | penpet`}
-				description="" // TODO: Add description
+				title={`${pen?.name ?? (error ?? UNKNOWN_ERROR).title} | penpet`}
+				description={pen?.name ?? (error ?? UNKNOWN_ERROR).description}
 			/>
-			{pen && <Editor pen={pen} setActivePals={setActivePals} />}
-			{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+			{pen ? (
+				<Editor pen={pen} setActivePals={setActivePals} />
+			) : (
+				<ErrorMessage>{(error ?? UNKNOWN_ERROR).message}</ErrorMessage>
+			)}
 		</Layout>
 	)
 }
