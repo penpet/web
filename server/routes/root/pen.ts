@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
-import Pal from '../models/Pal'
+import Pal from '../../models/Pal'
 import {
 	getPens,
 	getPen,
@@ -9,15 +9,15 @@ import {
 	editPenName,
 	editPublicRole,
 	deletePen
-} from '../models/Pen'
-import { PublicRole, getRole } from '../models/Role'
-import edit from '../models/Editor'
-import Cursors from '../models/Cursors'
-import HttpError from '../utils/HttpError'
-import sendError from '../utils/sendError'
-import { assertAuthenticated } from '../utils/assert'
-import { isOpen, ping } from '../utils/socket'
-import { useClient } from '../database'
+} from '../../models/Pen'
+import { PublicRole, getRole } from '../../models/Role'
+import edit from '../../models/Editor'
+import Cursors from '../../models/Cursors'
+import HttpError from '../../utils/HttpError'
+import sendError from '../../utils/sendError'
+import { assertAuthenticated } from '../../middleware/assert'
+import { isOpen, ping } from '../../utils/socket'
+import { useClient } from '../../database'
 
 const router = Router()
 

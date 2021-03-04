@@ -1,14 +1,14 @@
 import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
-import Pal from '../models/Pal'
-import { getPenPals } from '../models/PenPal'
-import { createInvite } from '../models/Invite'
-import Role, { editRole, deleteRole } from '../models/Role'
-import { assertAuthenticated } from '../utils/assert'
-import HttpError from '../utils/HttpError'
-import sendError from '../utils/sendError'
-import { useClient } from '../database'
+import Pal from '../../models/Pal'
+import { getPenPals } from '../../models/PenPal'
+import { createInvite } from '../../models/Invite'
+import Role, { editRole, deleteRole } from '../../models/Role'
+import { assertAuthenticated } from '../../middleware/assert'
+import HttpError from '../../utils/HttpError'
+import sendError from '../../utils/sendError'
+import { useClient } from '../../database'
 
 const router = Router()
 

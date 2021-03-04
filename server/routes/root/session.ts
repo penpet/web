@@ -2,8 +2,8 @@ import session from 'express-session'
 import store from 'connect-pg-simple'
 import { Pool } from 'pg'
 
-import { options as databaseOptions } from '../database'
-import { DEV } from '../constants'
+import { options as databaseOptions } from '../../database'
+import { DEV } from '../../constants'
 
 const MAX_AGE = 1000 * 60 * 60 * 24 * 365 * 10
 

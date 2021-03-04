@@ -1,10 +1,10 @@
 import { Router } from 'express'
 
-import Pal from '../models/Pal'
-import { getInvite, acceptInvite } from '../models/Invite'
-import HttpError from '../utils/HttpError'
-import sendError from '../utils/sendError'
-import { useClient } from '../database'
+import Pal from '../../models/Pal'
+import { getInvite, acceptInvite } from '../../models/Invite'
+import HttpError from '../../utils/HttpError'
+import sendError from '../../utils/sendError'
+import { useClient } from '../../database'
 
 const router = Router()
 

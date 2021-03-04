@@ -2,13 +2,16 @@ import express, { Router } from 'express'
 import passport from 'passport'
 import rateLimit from 'express-rate-limit'
 
-import Pal, { palToPublic, createPal, editPalName } from '../models/Pal'
-import HttpError from '../utils/HttpError'
-import sendError from '../utils/sendError'
-import { assertAuthenticated, assertUnauthenticated } from '../utils/assert'
-import { useClient } from '../database'
+import Pal, { palToPublic, createPal, editPalName } from '../../models/Pal'
+import HttpError from '../../utils/HttpError'
+import sendError from '../../utils/sendError'
+import {
+	assertAuthenticated,
+	assertUnauthenticated
+} from '../../middleware/assert'
+import { useClient } from '../../database'
 
-import '../passport'
+import '../../passport'
 
 const router = Router()
 

@@ -1,11 +1,11 @@
 import express, { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 
-import Pal from '../models/Pal'
-import { assertAuthenticated } from '../utils/assert'
-import HttpError from '../utils/HttpError'
-import upload from '../utils/upload'
-import sendError from '../utils/sendError'
+import Pal from '../../models/Pal'
+import { assertAuthenticated } from '../../middleware/assert'
+import HttpError from '../../utils/HttpError'
+import upload from '../../utils/upload'
+import sendError from '../../utils/sendError'
 
 const router = Router()
 
