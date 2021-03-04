@@ -74,7 +74,7 @@ const EditorContent = ({ pen, setActivePals }: EditorContentProps) => {
 			if (!(doc && quill && cursors && source === 'user')) return
 
 			doc.submitOp(delta, { source: quill }, error => {
-				if (error) handleError(error)
+				if (error) console.error(error)
 			})
 
 			const didFormat = delta.reduce(
