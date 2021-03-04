@@ -5,11 +5,11 @@ import PenPal from 'models/PenPal'
 import fetch from 'lib/fetch'
 import handleError from 'lib/handleError'
 
-const usePals = (penId: string, shouldLoad = true) => {
+const usePals = (penId: string, isShowing: boolean) => {
 	const previous = useRef<PenPal[] | undefined>()
 
-	const { data: current, error } = useSWR<PenPal[], unknown>(
-		shouldLoad ? `pens/${penId}/pals` : null,
+	const { data: current, error, mutate } = useSWR<PenPal[], unknown>(
+		isShowing ? `pens/${penId}/pals` : null,
 		fetch,
 		{ initialData: previous.current }
 	)
@@ -17,6 +17,10 @@ const usePals = (penId: string, shouldLoad = true) => {
 	useEffect(() => {
 		previous.current = current
 	}, [previous, current])
+
+	useEffect(() => {
+		if (isShowing) mutate()
+	}, [isShowing, mutate])
 
 	useEffect(() => {
 		if (error) handleError(error)
