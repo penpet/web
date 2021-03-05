@@ -43,9 +43,11 @@ code {
 	border-radius: 3px;
 }
 
-.ql-syntax {
+pre {
 	overflow: visible;
+	margin: 5px 0;
 	padding: 8px 12px;
+	white-space: pre-wrap;
 	color: white;
 	background: rgba(255, 255, 255, 0.1);
 	border: 1px solid rgba(255, 255, 255, 0.1);
@@ -527,13 +529,6 @@ blockquote {
 	margin-bottom: 5px;
 	margin-top: 5px;
 	padding-left: 16px;
-}
-
-pre {
-	white-space: pre-wrap;
-	margin-bottom: 5px;
-	margin-top: 5px;
-	padding: 5px 10px;
 }
 
 img {
