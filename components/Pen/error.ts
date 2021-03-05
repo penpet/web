@@ -1,17 +1,4 @@
-export interface ErrorDescription {
-	title: string
-	description: string
-	message: string
-}
-
-const getUnknownError = (status: number): ErrorDescription => ({
-	title: `Error (${status})`,
-	description: `An unknown error occurred (${status})`,
-	message: `An unknown error occurred (${status})`
-})
-
-export const UNKNOWN_ERROR_STATUS = 500
-export const UNKNOWN_ERROR = getUnknownError(UNKNOWN_ERROR_STATUS)
+import ErrorDescription, { getUnknownError } from 'models/ErrorDescription'
 
 const getError = (status: number): ErrorDescription => {
 	switch (status) {

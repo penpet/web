@@ -1,0 +1,42 @@
+@font-face {
+	font-family: OperatorMono;
+	src: url('https://pen.pet/fonts/OperatorMono.otf') format('opentype');
+}
+
+*,
+::before,
+::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: OperatorMono, monospace;
+	border: none;
+	outline: none;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 12px 16px;
+	text-align: center;
+	font-size: 16px;
+	color: white;
+	background: #292d3e;
+	text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+#title {
+	font-size: 60px;
+}
+
+#message {
+	margin-top: 8px;
+	font-size: 30px;
+}
