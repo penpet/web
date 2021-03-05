@@ -40,6 +40,7 @@ router.get('/:id', async ({ params: { id } }, res) => {
 					<meta charset="utf-8">
 					<meta name="viewport" content="width=device-width, initial-scale=1">
 					<meta name="description" content="${encode(getPreview(pen.data))}">
+					<link rel="stylesheet" href="/index.css">
 					<title>${encode(pen.name)}</title>
 				</head>
 				<body>

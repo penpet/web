@@ -201,7 +201,7 @@ $selected: colors.$pink;
 		padding: 8px 12px !important;
 		color: white !important;
 		background: transparentize(white, 0.9) !important;
-		border: 1px solid colors.$border;
+		border: 1px solid colors.$border !important;
 		border-radius: 8px !important;
 	}
 
