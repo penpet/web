@@ -39,6 +39,13 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 					content={styles.theme}
 				/>
 				<meta key="theme-color" name="theme-color" content={styles.theme} />
+				<link
+					rel="preload"
+					href="/fonts/OperatorMono.otf"
+					as="font"
+					type="font/otf"
+					crossOrigin="anonymous"
+				/>
 			</Head>
 			<RecoilRoot initializeState={initializeState(pageProps)}>
 				<Component {...pageProps} />

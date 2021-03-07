@@ -4,6 +4,7 @@ import { encode } from 'html-entities'
 
 import { PublicRole } from '../../models/Role'
 import getPreview, { Delta } from '../../models/Preview'
+import page from '../../models/Page'
 import ErrorDescription, {
 	getUnknownError,
 	UNKNOWN_ERROR_STATUS
@@ -64,43 +65,31 @@ router.get('/:id', async ({ params: { id } }, res) => {
 			return pen
 		})
 
-		res.send(`
-			<!DOCTYPE html>
-			<html lang="en">
-				<head>
-					<meta charset="utf-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1">
-					<meta name="description" content="${encode(getPreview(pen.data))}">
-					<link rel="stylesheet" href="/styles/pen.css">
-					<title>${encode(pen.name)}</title>
-				</head>
-				<body>
-					${new QuillDeltaToHtmlConverter(pen.data.ops).convert()}
-				</body>
-			</html>
-		`)
+		res.send(
+			page({
+				id: 'pen',
+				title: pen.name,
+				description: getPreview(pen.data),
+				body: new QuillDeltaToHtmlConverter(pen.data.ops).convert()
+			})
+		)
 	} catch (error) {
 		const status =
 			error instanceof HttpError ? error.status : UNKNOWN_ERROR_STATUS
 
 		const { title, description, message } = getError(status)
 
-		res.status(status).send(`
-			<!DOCTYPE html>
-			<html lang="en">
-				<head>
-					<meta charset="utf-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1">
-					<meta name="description" content="${encode(description)}">
-					<link rel="stylesheet" href="/styles/error.css">
-					<title>${encode(title)}</title>
-				</head>
-				<body>
+		res.status(status).send(
+			page({
+				id: 'error',
+				title,
+				description,
+				body: `
 					<h1 id="title">Uh oh!</h1>
 					<p id="message">${encode(message)}</p>
-				</body>
-			</html>
-		`)
+				`
+			})
+		)
 	}
 })
 
